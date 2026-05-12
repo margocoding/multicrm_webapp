@@ -5,6 +5,8 @@ import { useAppStore } from '../store/useAppStore';
 import type { Product } from '../types';
 import { StatusBadge } from '../components/ui/StatusBadge';
 import { Modal } from '../components/ui/Modal';
+import { Button } from '../components/ui/Button';
+import { Table, TableHeader, TableBody, TableRow, TableCell } from '../components/ui/Table';
 
 export function Products() {
   const { products, productSites, addProduct, deleteProduct } = useAppStore();
@@ -64,14 +66,10 @@ export function Products() {
           <h1 className="text-xl lg:text-2xl font-bold text-white">Товары</h1>
           <p className="text-gray-400 text-sm mt-1">Управление каталогом товаров</p>
         </div>
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-accent hover:bg-accent-hover text-white rounded-lg transition-colors glow-red-hover text-sm lg:text-base"
-        >
-          <Plus className="w-4 h-4" />
+        <Button onClick={() => setIsModalOpen(true)} size="sm" leftIcon={<Plus className="w-4 h-4" />}>
           <span className="hidden sm:inline">Новый товар</span>
           <span className="sm:hidden">Товар</span>
-        </button>
+        </Button>
       </div>
 
       {/* Filters */}
@@ -114,19 +112,19 @@ export function Products() {
         className="glass rounded-xl border border-white/5 overflow-hidden"
       >
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[900px]">
-            <thead>
-              <tr className="border-b border-white/5 bg-background-dark/50">
-                <th className="text-left px-4 lg:px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Товар</th>
-                <th className="text-left px-4 lg:px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider hidden sm:table-cell">Категория</th>
-                <th className="text-left px-4 lg:px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Цена</th>
-                <th className="text-left px-4 lg:px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider hidden md:table-cell">Внешний ID</th>
-                <th className="text-left px-4 lg:px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider hidden lg:table-cell">Опубликовано на сайтах</th>
-                <th className="text-left px-4 lg:px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Статус</th>
-                <th className="text-right px-4 lg:px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Действия</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-white/5">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableCell variant="header">Товар</TableCell>
+                <TableCell variant="header" className="hidden sm:table-cell">Категория</TableCell>
+                <TableCell variant="header">Цена</TableCell>
+                <TableCell variant="header" className="hidden md:table-cell">Внешний ID</TableCell>
+                <TableCell variant="header" className="hidden lg:table-cell">Опубликовано на сайтах</TableCell>
+                <TableCell variant="header">Статус</TableCell>
+                <TableCell variant="header" className="text-right">Действия</TableCell>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               <AnimatePresence>
                 {paginatedProducts.map((product, index) => (
                   <motion.tr
@@ -138,7 +136,7 @@ export function Products() {
                     whileHover={{ backgroundColor: 'rgba(220, 38, 38, 0.05)' }}
                     className="table-row-hover"
                   >
-                    <td className="px-4 lg:px-6 py-4">
+                    <TableCell>
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-lg overflow-hidden bg-background-dark flex-shrink-0">
                           <img src={product.image} alt={product.title} className="w-full h-full object-cover" />
@@ -148,46 +146,48 @@ export function Products() {
                           <p className="text-gray-500 text-xs truncate max-w-[150px] lg:max-w-[200px]">{product.description}</p>
                         </div>
                       </div>
-                    </td>
-                    <td className="px-4 lg:px-6 py-4 hidden sm:table-cell">
+                    </TableCell>
+                    <TableCell className="hidden sm:table-cell">
                       <span className="inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-500/10 text-purple-400">
                         {product.category}
                       </span>
-                    </td>
-                    <td className="px-4 lg:px-6 py-4 text-xs lg:text-sm text-white font-medium">${product.price.toFixed(2)}</td>
-                    <td className="px-4 lg:px-6 py-4 hidden md:table-cell">
+                    </TableCell>
+                    <TableCell className="text-xs lg:text-sm text-white font-medium">${product.price.toFixed(2)}</TableCell>
+                    <TableCell className="hidden md:table-cell">
                       <div className="flex items-center gap-1.5 text-gray-400 text-xs font-mono">
                         <ExternalLink className="w-3 h-3" />
                         {product.externalId}
                       </div>
-                    </td>
-                    <td className="px-6 py-4">
+                    </TableCell>
+                    <TableCell className="hidden lg:table-cell">
                       <div className="flex items-center gap-2">
                         <Package className="w-4 h-4 text-gray-400" />
                         <span className="text-sm text-gray-300">{getPublishedSitesCount(product.id)} сайтов</span>
                       </div>
-                    </td>
-                    <td className="px-6 py-4">
+                    </TableCell>
+                    <TableCell>
                       <StatusBadge status={getPublishedSitesCount(product.id) > 0 ? 'published' : 'draft'} size="sm" />
-                    </td>
-                    <td className="px-6 py-4">
+                    </TableCell>
+                    <TableCell>
                       <div className="flex items-center justify-end gap-2">
-                        <button className="p-1.5 hover:bg-white/10 rounded-lg transition-colors text-gray-400 hover:text-white">
+                        <Button variant="ghost" size="sm" className="p-1.5 h-auto">
                           <Pencil className="w-4 h-4" />
-                        </button>
-                        <button
+                        </Button>
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          className="p-1.5 h-auto hover:bg-red-500/10 hover:text-red-500"
                           onClick={() => deleteProduct(product.id)}
-                          className="p-1.5 hover:bg-red-500/10 rounded-lg transition-colors text-gray-400 hover:text-red-500"
                         >
                           <Trash2 className="w-4 h-4" />
-                        </button>
+                        </Button>
                       </div>
-                    </td>
+                    </TableCell>
                   </motion.tr>
                 ))}
               </AnimatePresence>
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
 
         {/* Pagination */}
@@ -293,18 +293,12 @@ export function Products() {
             </div>
           </div>
           <div className="flex gap-3 pt-4">
-            <button
-              onClick={() => setIsModalOpen(false)}
-              className="flex-1 px-4 py-2 bg-background-dark border border-white/10 rounded-lg text-white hover:bg-white/5 transition-colors"
-            >
+            <Button variant="secondary" onClick={() => setIsModalOpen(false)} className="flex-1">
               Отмена
-            </button>
-            <button
-              onClick={handleCreateProduct}
-              className="flex-1 px-4 py-2 bg-accent hover:bg-accent-hover text-white rounded-lg transition-colors"
-            >
+            </Button>
+            <Button onClick={handleCreateProduct} className="flex-1">
               Создать товар
-            </button>
+            </Button>
           </div>
         </div>
       </Modal>

@@ -70,17 +70,17 @@ export function Dashboard() {
         {/* Последние импорты */}
         <motion.div variants={containerVariants} className="lg:col-span-2">
           <Card>
-            <div className="px-6 py-4 border-b border-white/10 flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-white">Последние импорты</h2>
+            <div className="px-4 lg:px-6 py-4 border-b border-white/10 flex items-center justify-between flex-wrap gap-3">
+              <h2 className="text-base lg:text-lg font-semibold text-white">Последние импорты</h2>
               <StatusBadge status="synced" size="sm" />
             </div>
-            <CardContent>
+            <CardContent className="p-4 lg:p-6">
               <div className="space-y-3">
                 {imports.slice(0, 5).map((imp) => (
                   <motion.div
                     key={imp.id}
                     whileHover={{ x: 4 }}
-                    className="flex items-center justify-between p-3 bg-white/[0.02] rounded-lg border border-white/5"
+                    className="flex flex-col sm:flex-row sm:items-center justify-between p-3 bg-white/[0.02] rounded-lg border border-white/5 gap-3 sm:gap-0"
                   >
                     <div className="flex items-center gap-3">
                       <div className={`p-2 rounded-lg ${imp.type === 'xml' ? 'bg-orange-500/10 text-orange-500' : 'bg-blue-500/10 text-blue-500'}`}>
@@ -91,7 +91,7 @@ export function Dashboard() {
                         <p className="text-gray-500 text-xs">{new Date(imp.createdAt).toLocaleDateString()}</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-4 pl-14 sm:pl-0">
                       <span className="text-gray-400 text-sm">{imp.productsCount} тов.</span>
                       <StatusBadge 
                         status={imp.status === 'completed' ? 'synced' : imp.status === 'processing' ? 'processing' : 'failed'} 
@@ -153,35 +153,37 @@ export function Dashboard() {
       <motion.div variants={containerVariants}>
         <Card>
           <div className="px-4 lg:px-6 py-4 border-b border-white/10">
-            <h2 className="text-lg font-semibold text-white">Обзор сайтов</h2>
+            <h2 className="text-base lg:text-lg font-semibold text-white">Обзор сайтов</h2>
           </div>
-          <div className="overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableCell variant="header">Название сайта</TableCell>
-                  <TableCell variant="header">Домен</TableCell>
-                  <TableCell variant="header">Тип</TableCell>
-                  <TableCell variant="header">Статус</TableCell>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {sites.map((site) => (
-                  <TableRow key={site.id}>
-                    <TableCell className="font-medium text-white">{site.name}</TableCell>
-                    <TableCell className="text-gray-400">{site.domain}</TableCell>
-                    <TableCell>
-                      <Badge variant={site.type === 'product' ? 'info' : 'neutral'} size="sm">
-                        {site.type === 'product' ? 'Товарный' : 'Статейный'}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <StatusBadge status="live" size="sm" />
-                    </TableCell>
+          <div className="overflow-x-auto -mx-4 lg:mx-0">
+            <div className="min-w-[600px] lg:min-w-0 px-4 lg:px-0">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableCell variant="header">Название сайта</TableCell>
+                    <TableCell variant="header">Домен</TableCell>
+                    <TableCell variant="header">Тип</TableCell>
+                    <TableCell variant="header">Статус</TableCell>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {sites.map((site) => (
+                    <TableRow key={site.id}>
+                      <TableCell className="font-medium text-white text-xs lg:text-sm">{site.name}</TableCell>
+                      <TableCell className="text-gray-400 text-xs lg:text-sm">{site.domain}</TableCell>
+                      <TableCell>
+                        <Badge variant={site.type === 'product' ? 'info' : 'neutral'} size="sm">
+                          {site.type === 'product' ? 'Товарный' : 'Статейный'}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <StatusBadge status="live" size="sm" />
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           </div>
         </Card>
       </motion.div>

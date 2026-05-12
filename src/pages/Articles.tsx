@@ -5,6 +5,8 @@ import { useAppStore } from '../store/useAppStore';
 import type { Article } from '../types';
 import { StatusBadge } from '../components/ui/StatusBadge';
 import { Modal } from '../components/ui/Modal';
+import { Button } from '../components/ui/Button';
+import { Table, TableHeader, TableBody, TableRow, TableCell } from '../components/ui/Table';
 
 
 export function Articles() {
@@ -50,24 +52,21 @@ export function Articles() {
   return (
     <div className="space-y-6">
       {/* Заголовок страницы */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white">Статьи</h1>
+          <h1 className="text-xl lg:text-2xl font-bold text-white">Статьи</h1>
           <p className="text-gray-400 text-sm mt-1">Управление контентными статьями</p>
         </div>
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-accent hover:bg-accent-hover text-white rounded-lg transition-colors glow-red-hover"
-        >
-          <Plus className="w-4 h-4" />
-          Новая статья
-        </button>
+        <Button onClick={() => setIsModalOpen(true)} size="sm" leftIcon={<Plus className="w-4 h-4" />}>
+          <span className="hidden sm:inline">Новая статья</span>
+          <span className="sm:hidden">Статья</span>
+        </Button>
       </div>
 
       {/* Фильтры */}
       <div className="glass rounded-xl border border-white/5 p-4">
-        <div className="flex items-center gap-4">
-          <div className="relative flex-1 max-w-md">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+          <div className="relative w-full sm:flex-1 sm:max-w-md">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
             <input
               type="text"
@@ -89,78 +88,82 @@ export function Articles() {
         animate={{ opacity: 1, y: 0 }}
         className="glass rounded-xl border border-white/5 overflow-hidden"
       >
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-white/5 bg-background-dark/50">
-                <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Заголовок</th>
-                <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Создана</th>
-                <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Опубликовано на сайтах</th>
-                <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Статус</th>
-                <th className="text-right px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Действия</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-white/5">
-              <AnimatePresence>
-                {paginatedArticles.map((article, index) => (
-                  <motion.tr
-                    key={article.id}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, x: -10 }}
-                    transition={{ delay: index * 0.05 }}
-                    whileHover={{ backgroundColor: 'rgba(220, 38, 38, 0.05)' }}
-                    className="table-row-hover"
-                  >
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
-                        <div className="p-2 bg-cyan-500/10 rounded-lg">
-                          <FileText className="w-4 h-4 text-cyan-500" />
+        <div className="overflow-x-auto -mx-4 lg:mx-0">
+          <div className="min-w-[700px] lg:min-w-0 px-4 lg:px-0">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableCell variant="header">Заголовок</TableCell>
+                  <TableCell variant="header" className="hidden sm:table-cell">Создана</TableCell>
+                  <TableCell variant="header">Опубликовано на сайтах</TableCell>
+                  <TableCell variant="header">Статус</TableCell>
+                  <TableCell variant="header" className="text-right">Действия</TableCell>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                <AnimatePresence>
+                  {paginatedArticles.map((article, index) => (
+                    <motion.tr
+                      key={article.id}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, x: -10 }}
+                      transition={{ delay: index * 0.05 }}
+                      whileHover={{ backgroundColor: 'rgba(220, 38, 38, 0.05)' }}
+                      className="table-row-hover"
+                    >
+                      <TableCell>
+                        <div className="flex items-center gap-3">
+                          <div className="p-2 bg-cyan-500/10 rounded-lg flex-shrink-0">
+                            <FileText className="w-4 h-4 text-cyan-500" />
+                          </div>
+                          <div className="min-w-0">
+                            <p className="text-white font-medium text-sm lg:text-base truncate">{article.title}</p>
+                            <p className="text-gray-500 text-xs truncate max-w-[200px] lg:max-w-[400px]">{article.content.substring(0, 100)}...</p>
+                          </div>
                         </div>
-                        <div>
-                          <p className="text-white font-medium">{article.title}</p>
-                          <p className="text-gray-500 text-sm truncate max-w-[400px]">{article.content.substring(0, 100)}...</p>
+                      </TableCell>
+                      <TableCell className="text-xs lg:text-sm text-gray-400 hidden sm:table-cell">{new Date(article.createdAt).toLocaleDateString()}</TableCell>
+                      <TableCell>
+                        <span className="text-xs lg:text-sm text-gray-300">{getPublishedSitesCount(article.id)} сайт.</span>
+                      </TableCell>
+                      <TableCell>
+                        <StatusBadge status={getPublishedSitesCount(article.id) > 0 ? 'published' : 'draft'} size="sm" />
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center justify-end gap-2">
+                          <Button variant="ghost" size="sm" className="p-1.5 h-auto">
+                            <Pencil className="w-4 h-4" />
+                          </Button>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="p-1.5 h-auto hover:bg-red-500/10 hover:text-red-500"
+                            onClick={() => deleteArticle(article.id)}
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
                         </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-400">{new Date(article.createdAt).toLocaleDateString()}</td>
-                    <td className="px-6 py-4">
-                      <span className="text-sm text-gray-300">{getPublishedSitesCount(article.id)} сайт.</span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <StatusBadge status={getPublishedSitesCount(article.id) > 0 ? 'published' : 'draft'} size="sm" />
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center justify-end gap-2">
-                        <button className="p-1.5 hover:bg-white/10 rounded-lg transition-colors text-gray-400 hover:text-white">
-                          <Pencil className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => deleteArticle(article.id)}
-                          className="p-1.5 hover:bg-red-500/10 rounded-lg transition-colors text-gray-400 hover:text-red-500"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </td>
-                  </motion.tr>
-                ))}
-              </AnimatePresence>
-            </tbody>
-          </table>
+                      </TableCell>
+                    </motion.tr>
+                  ))}
+                </AnimatePresence>
+              </TableBody>
+            </Table>
+          </div>
         </div>
 
         {/* Пагинация */}
         {totalPages > 1 && (
-          <div className="flex items-center justify-between px-6 py-4 border-t border-white/5">
-            <p className="text-sm text-gray-400">
+          <div className="flex flex-col sm:flex-row items-center justify-between px-4 lg:px-6 py-4 border-t border-white/5 gap-4">
+            <p className="text-xs lg:text-sm text-gray-400 text-center sm:text-left">
               Показано {(currentPage - 1) * itemsPerPage + 1} - {Math.min(currentPage * itemsPerPage, filteredArticles.length)} из {filteredArticles.length} статей
             </p>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 overflow-x-auto pb-2 sm:pb-0">
               <button
                 onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                 disabled={currentPage === 1}
-                className="p-2 hover:bg-white/10 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="p-2 hover:bg-white/10 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
@@ -168,7 +171,7 @@ export function Articles() {
                 <button
                   key={page}
                   onClick={() => setCurrentPage(page)}
-                  className={`w-8 h-8 rounded-lg text-sm font-medium transition-colors ${
+                  className={`w-8 h-8 rounded-lg text-sm font-medium transition-colors flex-shrink-0 ${
                     currentPage === page
                       ? 'bg-accent text-white'
                       : 'hover:bg-white/10 text-gray-400'
@@ -180,7 +183,7 @@ export function Articles() {
               <button
                 onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                 disabled={currentPage === totalPages}
-                className="p-2 hover:bg-white/10 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="p-2 hover:bg-white/10 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
               >
                 <ChevronRight className="w-4 h-4" />
               </button>
@@ -218,18 +221,12 @@ export function Articles() {
             />
           </div>
           <div className="flex gap-3 pt-4">
-            <button
-              onClick={() => setIsModalOpen(false)}
-              className="flex-1 px-4 py-2 bg-background-dark border border-white/10 rounded-lg text-white hover:bg-white/5 transition-colors"
-            >
+            <Button variant="secondary" onClick={() => setIsModalOpen(false)} className="flex-1">
               Отмена
-            </button>
-            <button
-              onClick={handleCreateArticle}
-              className="flex-1 px-4 py-2 bg-accent hover:bg-accent-hover text-white rounded-lg transition-colors"
-            >
+            </Button>
+            <Button onClick={handleCreateArticle} className="flex-1">
               Создать статью
-            </button>
+            </Button>
           </div>
         </div>
       </Modal>

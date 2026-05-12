@@ -5,6 +5,8 @@ import { useAppStore } from '../store/useAppStore';
 import type { Site } from '../types';
 import { StatusBadge } from '../components/ui/StatusBadge';
 import { Modal } from '../components/ui/Modal';
+import { Button } from '../components/ui/Button';
+import { Table, TableHeader, TableBody, TableRow, TableCell } from '../components/ui/Table';
 
 type SiteType = 'product' | 'article';
 
@@ -53,14 +55,10 @@ export function Sites() {
           <h1 className="text-xl lg:text-2xl font-bold text-white">Сайты</h1>
           <p className="text-gray-400 text-sm mt-1">Управление сетью ваших сайтов</p>
         </div>
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-accent hover:bg-accent-hover text-white rounded-lg transition-colors glow-red-hover text-sm lg:text-base"
-        >
-          <Plus className="w-4 h-4" />
+        <Button onClick={() => setIsModalOpen(true)} size="sm" leftIcon={<Plus className="w-4 h-4" />}>
           <span className="hidden sm:inline">Новый сайт</span>
           <span className="sm:hidden">Сайт</span>
-        </button>
+        </Button>
       </div>
 
       {/* Фильтры */}
@@ -89,19 +87,19 @@ export function Sites() {
         className="glass rounded-xl border border-white/5 overflow-hidden"
       >
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[800px]">
-            <thead>
-              <tr className="border-b border-white/5 bg-background-dark/50">
-                <th className="text-left px-4 lg:px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Название</th>
-                <th className="text-left px-4 lg:px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Домен</th>
-                <th className="text-left px-4 lg:px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Тип</th>
-                <th className="text-left px-4 lg:px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider hidden sm:table-cell">Товары</th>
-                <th className="text-left px-4 lg:px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider hidden sm:table-cell">Статьи</th>
-                <th className="text-left px-4 lg:px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Статус</th>
-                <th className="text-right px-4 lg:px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Действия</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-white/5">
+          <Table className="">
+            <TableHeader>
+              <TableRow>
+                <TableCell variant="header">Название</TableCell>
+                <TableCell variant="header">Домен</TableCell>
+                <TableCell variant="header">Тип</TableCell>
+                <TableCell variant="header" className="hidden sm:table-cell">Товары</TableCell>
+                <TableCell variant="header" className="hidden sm:table-cell">Статьи</TableCell>
+                <TableCell variant="header">Статус</TableCell>
+                <TableCell variant="header" className="text-right">Действия</TableCell>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               <AnimatePresence>
                 {paginatedSites.map((site, index) => (
                   <motion.tr
@@ -113,45 +111,47 @@ export function Sites() {
                     whileHover={{ backgroundColor: 'rgba(220, 38, 38, 0.05)' }}
                     className="table-row-hover"
                   >
-                    <td className="px-4 lg:px-6 py-4">
+                    <TableCell>
                       <div className="flex items-center gap-3">
                         <div className="p-2 bg-accent/10 rounded-lg flex-shrink-0">
                           <Globe className="w-4 h-4 text-accent" />
                         </div>
                         <span className="text-white font-medium text-sm lg:text-base">{site.name}</span>
                       </div>
-                    </td>
-                    <td className="px-4 lg:px-6 py-4 text-xs lg:text-sm text-gray-400">{site.domain}</td>
-                    <td className="px-4 lg:px-6 py-4">
+                    </TableCell>
+                    <TableCell className="text-xs lg:text-sm text-gray-400">{site.domain}</TableCell>
+                    <TableCell>
                       <span className={`inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium ${
                         site.type === 'product' ? 'bg-purple-500/10 text-purple-500' : 'bg-cyan-500/10 text-cyan-500'
                       }`}>
                         {site.type === 'product' ? 'Товарный' : 'Статейный'}
                       </span>
-                    </td>
-                    <td className="px-4 lg:px-6 py-4 text-xs lg:text-sm text-gray-400 hidden sm:table-cell">{Math.floor(Math.random() * 500)}</td>
-                    <td className="px-4 lg:px-6 py-4 text-xs lg:text-sm text-gray-400 hidden sm:table-cell">{Math.floor(Math.random() * 50)}</td>
-                    <td className="px-4 lg:px-6 py-4">
+                    </TableCell>
+                    <TableCell className="text-xs lg:text-sm text-gray-400 hidden sm:table-cell">{Math.floor(Math.random() * 500)}</TableCell>
+                    <TableCell className="text-xs lg:text-sm text-gray-400 hidden sm:table-cell">{Math.floor(Math.random() * 50)}</TableCell>
+                    <TableCell>
                       <StatusBadge status="live" size="sm" />
-                    </td>
-                    <td className="px-6 py-4">
+                    </TableCell>
+                    <TableCell>
                       <div className="flex items-center justify-end gap-2">
-                        <button className="p-1.5 hover:bg-white/10 rounded-lg transition-colors text-gray-400 hover:text-white">
+                        <Button variant="ghost" size="sm" className="p-1.5 h-auto">
                           <Pencil className="w-4 h-4" />
-                        </button>
-                        <button
+                        </Button>
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          className="p-1.5 h-auto hover:bg-red-500/10 hover:text-red-500"
                           onClick={() => deleteSite(site.id)}
-                          className="p-1.5 hover:bg-red-500/10 rounded-lg transition-colors text-gray-400 hover:text-red-500"
                         >
                           <Trash2 className="w-4 h-4" />
-                        </button>
+                        </Button>
                       </div>
-                    </td>
+                    </TableCell>
                   </motion.tr>
                 ))}
               </AnimatePresence>
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
 
         {/* Пагинация */}
@@ -247,18 +247,12 @@ export function Sites() {
             </div>
           </div>
           <div className="flex gap-3 pt-4">
-            <button
-              onClick={() => setIsModalOpen(false)}
-              className="flex-1 px-4 py-2 bg-background-dark border border-white/10 rounded-lg text-white hover:bg-white/5 transition-colors"
-            >
+            <Button variant="secondary" onClick={() => setIsModalOpen(false)} className="flex-1">
               Отмена
-            </button>
-            <button
-              onClick={handleCreateSite}
-              className="flex-1 px-4 py-2 bg-accent hover:bg-accent-hover text-white rounded-lg transition-colors"
-            >
+            </Button>
+            <Button onClick={handleCreateSite} className="flex-1">
               Создать сайт
-            </button>
+            </Button>
           </div>
         </div>
       </Modal>
