@@ -84,9 +84,9 @@ export function Sites() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="glass rounded-xl border border-white/5 overflow-hidden"
+        className="glass rounded-xl border border-white/5"
       >
-        <Table className="">
+        <Table>
           <TableHeader>
             <TableRow>
               <TableCell variant="header">Название</TableCell>
