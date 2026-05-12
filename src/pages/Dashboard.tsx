@@ -1,9 +1,11 @@
 import { motion } from 'framer-motion';
 import { Globe, Package, FileUp, FileText, Activity } from 'lucide-react';
 import { useAppStore } from '../store/useAppStore';
-import { KPICard } from '../components/ui';
-import { StatusBadge } from '../components/ui';
-import { Card, CardContent, Table, TableHeader, TableBody, TableRow, TableCell, Badge } from '../components/ui';
+import { KPICard } from '../components/ui/KPICard';
+import { StatusBadge } from '../components/ui/StatusBadge';
+import { Card, CardContent } from '../components/ui/Card';
+import { Table, TableHeader, TableBody, TableRow, TableCell } from '../components/ui/Table';
+import { Badge } from '../components/ui/Badge';
 
 export function Dashboard() {
   const { sites, products, imports, articles, activityLogs } = useAppStore();
