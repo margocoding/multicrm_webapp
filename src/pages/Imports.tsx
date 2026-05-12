@@ -193,6 +193,7 @@ export function Imports() {
               </AnimatePresence>
             </TableBody>
           </Table>
+        </div>
       </motion.div>
 
       {/* Import Wizard Modal */}
