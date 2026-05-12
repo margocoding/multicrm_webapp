@@ -88,66 +88,68 @@ export function Articles() {
         animate={{ opacity: 1, y: 0 }}
         className="glass rounded-xl border border-white/5 overflow-hidden"
       >
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableCell variant="header">Заголовок</TableCell>
-              <TableCell variant="header" className="hidden sm:table-cell">Создана</TableCell>
-              <TableCell variant="header">Опубликовано на сайтах</TableCell>
-              <TableCell variant="header">Статус</TableCell>
-              <TableCell variant="header" className="text-right">Действия</TableCell>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            <AnimatePresence>
-              {paginatedArticles.map((article, index) => (
-                    <motion.tr
-                      key={article.id}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, x: -10 }}
-                      transition={{ delay: index * 0.05 }}
-                      whileHover={{ backgroundColor: 'rgba(220, 38, 38, 0.05)' }}
-                      className="table-row-hover"
-                    >
-                      <TableCell>
-                        <div className="flex items-center gap-3">
-                          <div className="p-2 bg-cyan-500/10 rounded-lg flex-shrink-0">
-                            <FileText className="w-4 h-4 text-cyan-500" />
+        <div className="overflow-x-auto">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableCell variant="header">Заголовок</TableCell>
+                <TableCell variant="header" className="hidden sm:table-cell">Создана</TableCell>
+                <TableCell variant="header">Опубликовано на сайтах</TableCell>
+                <TableCell variant="header">Статус</TableCell>
+                <TableCell variant="header" className="text-right">Действия</TableCell>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <AnimatePresence>
+                {paginatedArticles.map((article, index) => (
+                      <motion.tr
+                        key={article.id}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, x: -10 }}
+                        transition={{ delay: index * 0.05 }}
+                        whileHover={{ backgroundColor: 'rgba(220, 38, 38, 0.05)' }}
+                        className="table-row-hover"
+                      >
+                        <TableCell>
+                          <div className="flex items-center gap-3">
+                            <div className="p-2 bg-cyan-500/10 rounded-lg flex-shrink-0">
+                              <FileText className="w-4 h-4 text-cyan-500" />
+                            </div>
+                            <div className="min-w-0">
+                              <p className="text-white font-medium text-sm lg:text-base truncate">{article.title}</p>
+                              <p className="text-gray-500 text-xs truncate max-w-[200px] lg:max-w-[400px]">{article.content.substring(0, 100)}...</p>
+                            </div>
                           </div>
-                          <div className="min-w-0">
-                            <p className="text-white font-medium text-sm lg:text-base truncate">{article.title}</p>
-                            <p className="text-gray-500 text-xs truncate max-w-[200px] lg:max-w-[400px]">{article.content.substring(0, 100)}...</p>
+                        </TableCell>
+                        <TableCell className="text-xs lg:text-sm text-gray-400 hidden sm:table-cell">{new Date(article.createdAt).toLocaleDateString()}</TableCell>
+                        <TableCell>
+                          <span className="text-xs lg:text-sm text-gray-300">{getPublishedSitesCount(article.id)} сайт.</span>
+                        </TableCell>
+                        <TableCell>
+                          <StatusBadge status={getPublishedSitesCount(article.id) > 0 ? 'published' : 'draft'} size="sm" />
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center justify-end gap-2">
+                            <Button variant="ghost" size="sm" className="p-1.5 h-auto">
+                              <Pencil className="w-4 h-4" />
+                            </Button>
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="p-1.5 h-auto hover:bg-red-500/10 hover:text-red-500"
+                              onClick={() => deleteArticle(article.id)}
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
                           </div>
-                        </div>
-                      </TableCell>
-                      <TableCell className="text-xs lg:text-sm text-gray-400 hidden sm:table-cell">{new Date(article.createdAt).toLocaleDateString()}</TableCell>
-                      <TableCell>
-                        <span className="text-xs lg:text-sm text-gray-300">{getPublishedSitesCount(article.id)} сайт.</span>
-                      </TableCell>
-                      <TableCell>
-                        <StatusBadge status={getPublishedSitesCount(article.id) > 0 ? 'published' : 'draft'} size="sm" />
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center justify-end gap-2">
-                          <Button variant="ghost" size="sm" className="p-1.5 h-auto">
-                            <Pencil className="w-4 h-4" />
-                          </Button>
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className="p-1.5 h-auto hover:bg-red-500/10 hover:text-red-500"
-                            onClick={() => deleteArticle(article.id)}
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </motion.tr>
-                  ))}
-                </AnimatePresence>
-              </TableBody>
-            </Table>
+                        </TableCell>
+                      </motion.tr>
+                    ))}
+                  </AnimatePresence>
+                </TableBody>
+              </Table>
+            </div>
 
         {/* Пагинация */}
         {totalPages > 1 && (
@@ -186,6 +188,7 @@ export function Articles() {
             </div>
           </div>
         )}
+      </motion.div>
 
       {/* Модальное окно создания статьи */}
       <Modal

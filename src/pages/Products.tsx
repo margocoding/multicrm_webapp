@@ -111,7 +111,8 @@ export function Products() {
         animate={{ opacity: 1, y: 0 }}
         className="glass rounded-xl border border-white/5 overflow-hidden"
       >
-        <Table>
+        <div className="overflow-x-auto">
+          <Table>
           <TableHeader>
             <TableRow>
               <TableCell variant="header">Товар</TableCell>
@@ -187,6 +188,7 @@ export function Products() {
               </AnimatePresence>
             </TableBody>
           </Table>
+        </div>
 
         {/* Pagination */}
         {totalPages > 1 && (
@@ -237,6 +239,7 @@ export function Products() {
             </div>
           </div>
         )}
+      </motion.div>
 
       {/* Create Product Modal */}
       <Modal
