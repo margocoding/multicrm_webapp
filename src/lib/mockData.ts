@@ -2,7 +2,7 @@ import { faker } from '@faker-js/faker';
 import type { Site, Product, ImportBatch, Article, ActivityLog } from '../types';
 
 export function generateMockData() {
-  // Generate 5 sites
+  // Генерация 5 сайтов
   const sites: Site[] = Array.from({ length: 5 }, (_, i) => ({
     id: `site-${i + 1}`,
     name: faker.company.name(),
@@ -10,7 +10,7 @@ export function generateMockData() {
     type: faker.helpers.arrayElement(['product', 'article'] as const),
   }));
 
-  // Generate 100 products
+  // Генерация 100 товаров
   const products: Product[] = Array.from({ length: 100 }, (_, i) => ({
     id: `product-${i + 1}`,
     externalId: faker.string.alphanumeric(12).toUpperCase(),
@@ -21,10 +21,10 @@ export function generateMockData() {
     category: faker.commerce.department(),
   }));
 
-  // Generate 5 import batches
+  // Генерация 5 импортов
   const imports: ImportBatch[] = Array.from({ length: 5 }, (_, i) => ({
     id: `import-${i + 1}`,
-    name: `Import Batch ${i + 1} - ${faker.date.past().toLocaleDateString()}`,
+    name: `Импорт ${i + 1} - ${faker.date.past().toLocaleDateString('ru-RU')}`,
     type: faker.helpers.arrayElement(['xml', 'json'] as const),
     createdAt: faker.date.past().toISOString(),
     productsCount: faker.number.int({ min: 50, max: 500 }),
@@ -32,7 +32,7 @@ export function generateMockData() {
     status: faker.helpers.arrayElement(['processing', 'completed', 'failed'] as const),
   }));
 
-  // Generate 20 articles
+  // Генерация 20 статей
   const articles: Article[] = Array.from({ length: 20 }, (_, i) => ({
     id: `article-${i + 1}`,
     title: faker.lorem.sentence({ min: 5, max: 10 }),
@@ -40,19 +40,19 @@ export function generateMockData() {
     createdAt: faker.date.past().toISOString(),
   }));
 
-  // Generate activity logs
+  // Генерация логов активности
   const activityLogs: ActivityLog[] = Array.from({ length: 15 }, (_, i) => ({
     id: `activity-${i + 1}`,
     timestamp: faker.date.recent({ days: 7 }).toISOString(),
     message: faker.helpers.arrayElement([
-      'XML import completed',
-      'JSON import started',
-      'Products synced successfully',
-      'Article published to site',
-      'Sync failed - retry scheduled',
-      'New product batch imported',
-      'Site configuration updated',
-      'Import validation passed',
+      'XML импорт завершён',
+      'JSON импорт запущен',
+      'Товары успешно синхронизированы',
+      'Статья опубликована на сайте',
+      'Синхронизация не удалась — запланирована повторная попытка',
+      'Новая партия товаров импортирована',
+      'Конфигурация сайта обновлена',
+      'Валидация импорта пройдена',
     ]),
     type: faker.helpers.arrayElement(['info', 'success', 'warning', 'error'] as const),
   })).sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());

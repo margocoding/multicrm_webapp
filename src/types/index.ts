@@ -49,3 +49,9 @@ export interface ActivityLog {
   message: string;
   type: 'info' | 'success' | 'warning' | 'error';
 }
+
+// Типы для UI компонентов
+export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger' | 'outline';
+export type ButtonSize = 'sm' | 'md' | 'lg' | 'icon';
+export type BadgeVariant = 'default' | 'success' | 'warning' | 'error' | 'info' | 'processing';
+export type InputSize = 'sm' | 'md' | 'lg';

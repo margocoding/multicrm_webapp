@@ -3,8 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Pencil, Trash2, Globe, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useAppStore } from '../store/useAppStore';
 import type { Site } from '../types';
-import { StatusBadge } from '../components/StatusBadge';
-import { Modal } from '../components/Modal';
+import { StatusBadge } from '../components/ui';
+import { Modal } from '../components/ui';
 
 export function Sites() {
   const { sites, addSite, deleteSite } = useAppStore();

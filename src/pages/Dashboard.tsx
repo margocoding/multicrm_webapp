@@ -1,8 +1,8 @@
 import { motion } from 'framer-motion';
 import { Globe, Package, FileUp, FileText, Activity } from 'lucide-react';
 import { useAppStore } from '../store/useAppStore';
-import { KPICard } from '../components/KPICard';
-import { StatusBadge } from '../components/StatusBadge';
+import { KPICard } from '../components/ui';
+import { StatusBadge } from '../components/ui';
 import { Card, CardContent, Table, TableHeader, TableBody, TableRow, TableCell, Badge } from '../components/ui';
 
 export function Dashboard() {

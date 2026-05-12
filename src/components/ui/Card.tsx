@@ -1,6 +1,6 @@
 import { cn } from '../../lib/utils';
 
-interface CardProps {
+export interface CardProps {
   children: React.ReactNode;
   className?: string;
   hover?: boolean;
@@ -26,7 +26,7 @@ export function Card({ children, className, hover = false, glow = false }: CardP
   );
 }
 
-interface CardHeaderProps {
+export interface CardHeaderProps {
   children: React.ReactNode;
   className?: string;
 }
@@ -39,7 +39,7 @@ export function CardHeader({ children, className }: CardHeaderProps) {
   );
 }
 
-interface CardContentProps {
+export interface CardContentProps {
   children: React.ReactNode;
   className?: string;
 }
@@ -52,7 +52,7 @@ export function CardContent({ children, className }: CardContentProps) {
   );
 }
 
-interface CardFooterProps {
+export interface CardFooterProps {
   children: React.ReactNode;
   className?: string;
 }

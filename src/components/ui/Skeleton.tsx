@@ -1,6 +1,6 @@
 import { cn } from '../../lib/utils';
 
-interface SkeletonProps {
+export interface SkeletonProps {
   className?: string;
   variant?: 'text' | 'circular' | 'rectangular';
 }
@@ -19,7 +19,7 @@ export function Skeleton({ className, variant = 'text' }: SkeletonProps) {
   );
 }
 
-interface SkeletonTextProps {
+export interface SkeletonTextProps {
   lines?: number;
   className?: string;
 }
@@ -41,7 +41,7 @@ export function SkeletonText({ lines = 3, className }: SkeletonTextProps) {
   );
 }
 
-interface SkeletonCardProps {
+export interface SkeletonCardProps {
   className?: string;
 }
 

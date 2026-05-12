@@ -3,8 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Trash2, Upload, File, CheckCircle, AlertCircle, Globe } from 'lucide-react';
 import { useAppStore } from '../store/useAppStore';
 import type { ImportBatch } from '../types';
-import { StatusBadge } from '../components/StatusBadge';
-import { Modal } from '../components/Modal';
+import { StatusBadge } from '../components/ui';
+import { Modal } from '../components/ui';
 
 export function Imports() {
   const { imports, sites, addImport, deleteImport, addActivityLog } = useAppStore();
