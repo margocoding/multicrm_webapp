@@ -1,6 +1,6 @@
 import { cn } from '../../lib/utils';
 
-interface BadgeProps {
+export interface BadgeProps {
   variant?: 'success' | 'warning' | 'danger' | 'info' | 'neutral';
   size?: 'sm' | 'md';
   children: React.ReactNode;

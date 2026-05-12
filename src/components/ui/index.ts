@@ -13,6 +13,9 @@ export type { TextareaProps } from './Textarea';
 export { Badge } from './Badge';
 export type { BadgeProps } from './Badge';
 
+export { StatusBadge } from './StatusBadge';
+export type { StatusBadgeProps } from './StatusBadge';
+
 export { Modal } from './Modal';
 export type { ModalProps } from './Modal';
 
@@ -21,6 +24,9 @@ export type { TooltipProps } from './Tooltip';
 
 export { Card, CardHeader, CardContent, CardFooter } from './Card';
 export type { CardProps, CardHeaderProps, CardContentProps, CardFooterProps } from './Card';
+
+export { KPICard } from './KPICard';
+export type { KPICardProps } from './KPICard';
 
 export { Table, TableHeader, TableBody, TableRow, TableCell } from './Table';
 export type { TableProps, TableHeaderProps, TableBodyProps, TableRowProps, TableCellProps } from './Table';

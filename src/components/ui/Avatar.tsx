@@ -1,6 +1,6 @@
 import { cn } from '../../lib/utils';
 
-interface AvatarProps {
+export interface AvatarProps {
   src?: string;
   alt?: string;
   fallback: string;

@@ -3,7 +3,7 @@ import type { Site, Product, ImportBatch, Article, ActivityLog, ProductSite, Art
 import { generateMockData } from '../lib/mockData';
 
 interface AppState {
-  // Data
+  // Данные
   sites: Site[];
   products: Product[];
   imports: ImportBatch[];
@@ -12,50 +12,50 @@ interface AppState {
   productSites: ProductSite[];
   articleSites: ArticleSite[];
   
-  // UI State
+  // UI состояние
   sidebarCollapsed: boolean;
   selectedSiteId: string | null;
   searchQuery: string;
   
-  // Actions
+  // Действия
   setSidebarCollapsed: (collapsed: boolean) => void;
   setSelectedSiteId: (id: string | null) => void;
   setSearchQuery: (query: string) => void;
   
-  // Site actions
+  // Действия с сайтами
   addSite: (site: Site) => void;
   updateSite: (id: string, updates: Partial<Site>) => void;
   deleteSite: (id: string) => void;
   
-  // Product actions
+  // Действия с товарами
   addProduct: (product: Product) => void;
   updateProduct: (id: string, updates: Partial<Product>) => void;
   deleteProduct: (id: string) => void;
   
-  // Import actions
+  // Действия с импортами
   addImport: (importBatch: ImportBatch) => void;
   updateImport: (id: string, updates: Partial<ImportBatch>) => void;
   deleteImport: (id: string) => void;
   
-  // Article actions
+  // Действия со статьями
   addArticle: (article: Article) => void;
   updateArticle: (id: string, updates: Partial<Article>) => void;
   deleteArticle: (id: string) => void;
   
-  // Publication actions
+  // Действия с публикациями
   publishProductToSite: (productId: string, siteId: string) => void;
   unpublishProductFromSite: (productId: string, siteId: string) => void;
   publishArticleToSite: (articleId: string, siteId: string) => void;
   unpublishArticleFromSite: (articleId: string, siteId: string) => void;
   
-  // Add activity log
+  // Добавить лог активности
   addActivityLog: (log: Omit<ActivityLog, 'id' | 'timestamp'>) => void;
 }
 
 const mockData = generateMockData();
 
 export const useAppStore = create<AppState>((set) => ({
-  // Initial state
+  // Начальное состояние
   sites: mockData.sites,
   products: mockData.products,
   imports: mockData.imports,
@@ -75,23 +75,23 @@ export const useAppStore = create<AppState>((set) => ({
     }))
   ),
   
-  // UI State
+  // UI состояние
   sidebarCollapsed: false,
   selectedSiteId: null,
   searchQuery: '',
   
-  // Actions
+  // Действия
   setSidebarCollapsed: (collapsed) => set({ sidebarCollapsed: collapsed }),
   setSelectedSiteId: (id) => set({ selectedSiteId: id }),
   setSearchQuery: (query) => set({ searchQuery: query }),
   
-  // Site actions
+  // Действия с сайтами
   addSite: (site) => set((state) => ({ 
     sites: [...state.sites, site],
     activityLogs: [{
       id: `activity-${Date.now()}`,
       timestamp: new Date().toISOString(),
-      message: `Site "${site.name}" created`,
+      message: `Сайт "${site.name}" создан`,
       type: 'success',
     }, ...state.activityLogs]
   })),
@@ -107,18 +107,18 @@ export const useAppStore = create<AppState>((set) => ({
     activityLogs: [{
       id: `activity-${Date.now()}`,
       timestamp: new Date().toISOString(),
-      message: `Site deleted`,
+      message: `Сайт удалён`,
       type: 'warning',
     }, ...state.activityLogs]
   })),
   
-  // Product actions
+  // Действия с товарами
   addProduct: (product) => set((state) => ({
     products: [...state.products, product],
     activityLogs: [{
       id: `activity-${Date.now()}`,
       timestamp: new Date().toISOString(),
-      message: `Product "${product.title}" created`,
+      message: `Товар "${product.title}" создан`,
       type: 'success',
     }, ...state.activityLogs]
   })),
@@ -132,13 +132,13 @@ export const useAppStore = create<AppState>((set) => ({
     productSites: state.productSites.filter(ps => ps.productId !== id),
   })),
   
-  // Import actions
+  // Действия с импортами
   addImport: (importBatch) => set((state) => ({
     imports: [...state.imports, importBatch],
     activityLogs: [{
       id: `activity-${Date.now()}`,
       timestamp: new Date().toISOString(),
-      message: `Import "${importBatch.name}" started`,
+      message: `Импорт "${importBatch.name}" запущен`,
       type: 'info',
     }, ...state.activityLogs]
   })),
@@ -152,18 +152,18 @@ export const useAppStore = create<AppState>((set) => ({
     activityLogs: [{
       id: `activity-${Date.now()}`,
       timestamp: new Date().toISOString(),
-      message: `Import batch deleted`,
+      message: `Пакет импорта удалён`,
       type: 'warning',
     }, ...state.activityLogs]
   })),
   
-  // Article actions
+  // Действия со статьями
   addArticle: (article) => set((state) => ({
     articles: [...state.articles, article],
     activityLogs: [{
       id: `activity-${Date.now()}`,
       timestamp: new Date().toISOString(),
-      message: `Article "${article.title}" created`,
+      message: `Статья "${article.title}" создана`,
       type: 'success',
     }, ...state.activityLogs]
   })),
@@ -177,7 +177,7 @@ export const useAppStore = create<AppState>((set) => ({
     articleSites: state.articleSites.filter(as => as.articleId !== id),
   })),
   
-  // Publication actions
+  // Действия с публикациями
   publishProductToSite: (productId, siteId) => set((state) => {
     const exists = state.productSites.find(ps => ps.productId === productId && ps.siteId === siteId);
     if (exists) {
@@ -218,7 +218,7 @@ export const useAppStore = create<AppState>((set) => ({
     ),
   })),
   
-  // Add activity log
+  // Добавить лог активности
   addActivityLog: (log) => set((state) => ({
     activityLogs: [{
       id: `activity-${Date.now()}`,

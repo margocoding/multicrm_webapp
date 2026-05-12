@@ -1,6 +1,6 @@
 import { cn } from '../../lib/utils';
 
-interface TableProps {
+export interface TableProps {
   children: React.ReactNode;
   className?: string;
 }
@@ -13,7 +13,7 @@ export function Table({ children, className }: TableProps) {
   );
 }
 
-interface TableHeaderProps {
+export interface TableHeaderProps {
   children: React.ReactNode;
   className?: string;
 }
@@ -26,7 +26,7 @@ export function TableHeader({ children, className }: TableHeaderProps) {
   );
 }
 
-interface TableBodyProps {
+export interface TableBodyProps {
   children: React.ReactNode;
   className?: string;
 }
@@ -39,7 +39,7 @@ export function TableBody({ children, className }: TableBodyProps) {
   );
 }
 
-interface TableRowProps {
+export interface TableRowProps {
   children: React.ReactNode;
   className?: string;
   hover?: boolean;
@@ -59,7 +59,7 @@ export function TableRow({ children, className, hover = true }: TableRowProps) {
   );
 }
 
-interface TableCellProps {
+export interface TableCellProps {
   children: React.ReactNode;
   className?: string;
   variant?: 'default' | 'header';
