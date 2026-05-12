@@ -14,12 +14,12 @@ import { NavLink } from 'react-router-dom';
 import { Tooltip } from './ui/Tooltip';
 
 const navItems = [
-  { path: '/', icon: LayoutDashboard, label: 'Dashboard' },
-  { path: '/sites', icon: Globe, label: 'Sites' },
-  { path: '/products', icon: Package, label: 'Products' },
-  { path: '/imports', icon: FileUp, label: 'Imports' },
-  { path: '/articles', icon: FileText, label: 'Articles' },
-  { path: '/settings', icon: Settings, label: 'Settings' },
+  { path: '/', icon: LayoutDashboard, label: 'Главная' },
+  { path: '/sites', icon: Globe, label: 'Сайты' },
+  { path: '/products', icon: Package, label: 'Товары' },
+  { path: '/imports', icon: FileUp, label: 'Импорт' },
+  { path: '/articles', icon: FileText, label: 'Статьи' },
+  { path: '/settings', icon: Settings, label: 'Настройки' },
 ];
 
 export function Sidebar() {

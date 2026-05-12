@@ -14,7 +14,7 @@ export function Topbar() {
         <div className="relative w-96">
           <Input
             type="text"
-            placeholder="Search products, sites, articles..."
+            placeholder="Поиск товаров, сайтов, статей..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             leftIcon={<Search className="w-4 h-4" />}
@@ -29,7 +29,7 @@ export function Topbar() {
         <Badge variant="success" size="sm" glow>
           <div className="flex items-center gap-2">
             <RefreshCw className="w-3 h-3 animate-spin-slow" />
-            <span>All Systems Operational</span>
+            <span>Все системы работают</span>
           </div>
         </Badge>
 
@@ -46,8 +46,8 @@ export function Topbar() {
         <div className="flex items-center gap-3 pl-2 cursor-pointer group">
           <Avatar fallback="A" size="md" />
           <div className="hidden lg:block">
-            <p className="text-white font-medium text-sm group-hover:text-red-400 transition-colors">Admin User</p>
-            <p className="text-gray-500 text-xs">admin@nexus.com</p>
+            <p className="text-white font-medium text-sm group-hover:text-red-400 transition-colors">Администратор</p>
+            <p className="text-gray-500 text-xs">admin@nexus.ru</p>
           </div>
         </div>
       </div>
