@@ -59,24 +59,25 @@ export function Products() {
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white">Товары</h1>
+          <h1 className="text-xl lg:text-2xl font-bold text-white">Товары</h1>
           <p className="text-gray-400 text-sm mt-1">Управление каталогом товаров</p>
         </div>
         <button
           onClick={() => setIsModalOpen(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-accent hover:bg-accent-hover text-white rounded-lg transition-colors glow-red-hover"
+          className="flex items-center gap-2 px-4 py-2 bg-accent hover:bg-accent-hover text-white rounded-lg transition-colors glow-red-hover text-sm lg:text-base"
         >
           <Plus className="w-4 h-4" />
-          Новый товар
+          <span className="hidden sm:inline">Новый товар</span>
+          <span className="sm:hidden">Товар</span>
         </button>
       </div>
 
       {/* Filters */}
       <div className="glass rounded-xl border border-white/5 p-4">
-        <div className="flex items-center gap-4 flex-wrap">
-          <div className="relative flex-1 min-w-[200px] max-w-md">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 flex-wrap">
+          <div className="relative w-full sm:flex-1 min-w-[200px] max-w-md">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
             <input
               type="text"
@@ -113,16 +114,16 @@ export function Products() {
         className="glass rounded-xl border border-white/5 overflow-hidden"
       >
         <div className="overflow-x-auto">
-          <table className="w-full">
+          <table className="w-full min-w-[900px]">
             <thead>
               <tr className="border-b border-white/5 bg-background-dark/50">
-                <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Товар</th>
-                <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Категория</th>
-                <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Цена</th>
-                <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Внешний ID</th>
-                <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Опубликовано на сайтах</th>
-                <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Статус</th>
-                <th className="text-right px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Действия</th>
+                <th className="text-left px-4 lg:px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Товар</th>
+                <th className="text-left px-4 lg:px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider hidden sm:table-cell">Категория</th>
+                <th className="text-left px-4 lg:px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Цена</th>
+                <th className="text-left px-4 lg:px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider hidden md:table-cell">Внешний ID</th>
+                <th className="text-left px-4 lg:px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider hidden lg:table-cell">Опубликовано на сайтах</th>
+                <th className="text-left px-4 lg:px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Статус</th>
+                <th className="text-right px-4 lg:px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Действия</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/5">
@@ -137,24 +138,24 @@ export function Products() {
                     whileHover={{ backgroundColor: 'rgba(220, 38, 38, 0.05)' }}
                     className="table-row-hover"
                   >
-                    <td className="px-6 py-4">
+                    <td className="px-4 lg:px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-lg overflow-hidden bg-background-dark">
+                        <div className="w-10 h-10 rounded-lg overflow-hidden bg-background-dark flex-shrink-0">
                           <img src={product.image} alt={product.title} className="w-full h-full object-cover" />
                         </div>
-                        <div>
-                          <p className="text-white font-medium text-sm">{product.title}</p>
-                          <p className="text-gray-500 text-xs truncate max-w-[200px]">{product.description}</p>
+                        <div className="min-w-0">
+                          <p className="text-white font-medium text-sm lg:text-base truncate">{product.title}</p>
+                          <p className="text-gray-500 text-xs truncate max-w-[150px] lg:max-w-[200px]">{product.description}</p>
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-4 lg:px-6 py-4 hidden sm:table-cell">
                       <span className="inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-500/10 text-purple-400">
                         {product.category}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-sm text-white font-medium">${product.price.toFixed(2)}</td>
-                    <td className="px-6 py-4">
+                    <td className="px-4 lg:px-6 py-4 text-xs lg:text-sm text-white font-medium">${product.price.toFixed(2)}</td>
+                    <td className="px-4 lg:px-6 py-4 hidden md:table-cell">
                       <div className="flex items-center gap-1.5 text-gray-400 text-xs font-mono">
                         <ExternalLink className="w-3 h-3" />
                         {product.externalId}
@@ -191,15 +192,15 @@ export function Products() {
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="flex items-center justify-between px-6 py-4 border-t border-white/5">
-            <p className="text-sm text-gray-400">
+          <div className="flex flex-col sm:flex-row items-center justify-between px-4 lg:px-6 py-4 border-t border-white/5 gap-4">
+            <p className="text-xs lg:text-sm text-gray-400 text-center sm:text-left">
               Показано {(currentPage - 1) * itemsPerPage + 1} - {Math.min(currentPage * itemsPerPage, filteredProducts.length)} из {filteredProducts.length} товаров
             </p>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 overflow-x-auto pb-2 sm:pb-0">
               <button
                 onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                 disabled={currentPage === 1}
-                className="p-2 hover:bg-white/10 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="p-2 hover:bg-white/10 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
@@ -218,7 +219,7 @@ export function Products() {
                   <button
                     key={page}
                     onClick={() => setCurrentPage(page)}
-                    className={`w-8 h-8 rounded-lg text-sm font-medium transition-colors ${
+                    className={`w-8 h-8 rounded-lg text-sm font-medium transition-colors flex-shrink-0 ${
                       currentPage === page
                         ? 'bg-accent text-white'
                         : 'hover:bg-white/10 text-gray-400'
@@ -231,7 +232,7 @@ export function Products() {
               <button
                 onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                 disabled={currentPage === totalPages}
-                className="p-2 hover:bg-white/10 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="p-2 hover:bg-white/10 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
               >
                 <ChevronRight className="w-4 h-4" />
               </button>

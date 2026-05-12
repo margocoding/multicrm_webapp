@@ -148,3 +148,22 @@ body {
   outline: none;
   box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.3);
 }
+
+/* Mobile responsive utilities */
+@media (max-width: 768px) {
+  .mobile-hidden {
+    display: none !important;
+  }
+  
+  .mobile-full-width {
+    width: 100% !important;
+  }
+  
+  .mobile-stack {
+    flex-direction: column !important;
+  }
+  
+  .mobile-padding-sm {
+    padding: 1rem !important;
+  }
+}

@@ -19,9 +19,9 @@ function App() {
         {/* Main content wrapper */}
         <div className="relative z-10">
           <Sidebar />
-          <div className="transition-all duration-300" style={{ marginLeft: '260px' }}>
+          <div className="transition-all duration-300 lg:ml-[260px] ml-0">
             <Topbar />
-            <main className="p-6 min-h-[calc(100vh-4rem)]">
+            <main className="p-4 lg:p-6 min-h-[calc(100vh-4rem)] pt-20 lg:pt-0">
               <AnimatePresence mode="wait">
                 <Routes>
                   <Route path="/" element={<Dashboard />} />

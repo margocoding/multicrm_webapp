@@ -5,13 +5,16 @@ node_modules/
 # Build outputs
 dist/
 build/
-.next/
-out/
+*.js.map
+*.ts.map
+
+# Logs
+*.log
 
 # Environment variables
 .env
 .env.local
-.env.*
+*.env.*
 
 # IDE files
 .vscode/
@@ -19,117 +22,33 @@ out/
 *.swp
 *.swo
 
-# Logs
-*.log
+# OS files
+.DS_Store
+Thumbs.db
 
-# Python
+# Coverage reports
+coverage/
+htmlcov/
+*.coverage
+
+# Python cache
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
-.Python
-env/
-venv/
-.venv/
-pip-log.txt
-pip-delete-this-directory.txt
-.tox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.log
-.git/
-.mypy_cache/
-.pytest_cache/
-.hypothesis/
-
-# Compiled and binary files
-*.o
-*.obj
-*.exe
-*.dll
-*.so
-*.a
-*.out
-
-# OS generated files
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
 
 # Temporary files
 *.tmp
 *.temp
-*.bak
-*.backup
 
-# Coverage directory used by tools like istanbul
-coverage/
-istanbul-reports/
-
-# Unit test reports
-test-report.xml
-test-results.xml
-
-# Runtime data
-pids
-*.pid
-*.seed
-*.pid.lock
-
-# Debug log
-debug.log
-
-# Production
-logs
-*.log
-
-# Dependency directories
-node_modules/
-jspm_packages/
-julia-*/
-zig*/
-
-# Testing
-test/
-tests/
-spec/
-
-# Documentation
-doc/api/
-
-# Distribution / packaging
-.Python
-*.so
-.libs/
-
-# Mac
-.DS_Store
-.DS_Store?
-._*
-
-# Linux
-*~
-
-# Windows
-Thumbs.db
-ehthumbs.db
-Icon?
-```
-
-Wait, I need to reconsider this. Looking at the modified files, they're all TypeScript/JSX source files in a React project structure. Let me check if there are actually any build artifacts or dependency-related files that would warrant a .gitignore.
-
-Actually, the file changes only show source code modifications (tsx files), and without seeing any build artifacts, dependency directories, or temporary files in the changes, I should not automatically generate a comprehensive .gitignore. The original request says to only add files that match the ignore patterns AND are present in the file changes list.
-
-Since the changes are only to source files (.tsx), no .gitignore rules are needed based on the provided changes.
-
-```gitignore
-
+# Compressed files
+*.zip
+*.gz
+*.tar
+*.tgz
+*.bz2
+*.xz
+*.7z
+*.rar
+*.zst
 ```

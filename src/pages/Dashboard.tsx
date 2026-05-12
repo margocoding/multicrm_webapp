@@ -26,15 +26,15 @@ export function Dashboard() {
       className="space-y-6"
     >
       {/* Заголовок страницы */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white">Панель управления</h1>
+          <h1 className="text-xl lg:text-2xl font-bold text-white">Панель управления</h1>
           <p className="text-gray-400 text-sm mt-1">Обзор сети ваших сайтов</p>
         </div>
       </div>
 
       {/* KPI карточки */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <KPICard
           title="Активные сайты"
           value={sites.length}
@@ -152,35 +152,37 @@ export function Dashboard() {
       {/* Обзор сайтов */}
       <motion.div variants={containerVariants}>
         <Card>
-          <div className="px-6 py-4 border-b border-white/10">
+          <div className="px-4 lg:px-6 py-4 border-b border-white/10">
             <h2 className="text-lg font-semibold text-white">Обзор сайтов</h2>
           </div>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableCell variant="header">Название сайта</TableCell>
-                <TableCell variant="header">Домен</TableCell>
-                <TableCell variant="header">Тип</TableCell>
-                <TableCell variant="header">Статус</TableCell>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {sites.map((site) => (
-                <TableRow key={site.id}>
-                  <TableCell className="font-medium text-white">{site.name}</TableCell>
-                  <TableCell className="text-gray-400">{site.domain}</TableCell>
-                  <TableCell>
-                    <Badge variant={site.type === 'product' ? 'info' : 'neutral'} size="sm">
-                      {site.type === 'product' ? 'Товарный' : 'Статейный'}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <StatusBadge status="live" size="sm" />
-                  </TableCell>
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableCell variant="header">Название сайта</TableCell>
+                  <TableCell variant="header">Домен</TableCell>
+                  <TableCell variant="header">Тип</TableCell>
+                  <TableCell variant="header">Статус</TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {sites.map((site) => (
+                  <TableRow key={site.id}>
+                    <TableCell className="font-medium text-white">{site.name}</TableCell>
+                    <TableCell className="text-gray-400">{site.domain}</TableCell>
+                    <TableCell>
+                      <Badge variant={site.type === 'product' ? 'info' : 'neutral'} size="sm">
+                        {site.type === 'product' ? 'Товарный' : 'Статейный'}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <StatusBadge status="live" size="sm" />
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         </Card>
       </motion.div>
     </motion.div>
