@@ -6,13 +6,15 @@ import type { Site } from '../types';
 import { StatusBadge } from '../components/ui/StatusBadge';
 import { Modal } from '../components/ui/Modal';
 
+type SiteType = 'product' | 'article';
+
 export function Sites() {
   const { sites, addSite, deleteSite } = useAppStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
-
+  
   const [newSite, setNewSite] = useState<Partial<Site>>({
     name: '',
     domain: '',
@@ -36,7 +38,7 @@ export function Sites() {
         id: `site-${Date.now()}`,
         name: newSite.name,
         domain: newSite.domain,
-        type: newSite.type as 'product' | 'article',
+        type: newSite.type as SiteType,
       });
       setNewSite({ name: '', domain: '', type: 'product' });
       setIsModalOpen(false);
@@ -45,29 +47,29 @@ export function Sites() {
 
   return (
     <div className="space-y-6">
-      {/* Page Header */}
+      {/* Заголовок страницы */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white">Sites</h1>
-          <p className="text-gray-400 text-sm mt-1">Manage your multi-site network</p>
+          <h1 className="text-2xl font-bold text-white">Сайты</h1>
+          <p className="text-gray-400 text-sm mt-1">Управление сетью ваших сайтов</p>
         </div>
         <button
           onClick={() => setIsModalOpen(true)}
           className="flex items-center gap-2 px-4 py-2 bg-accent hover:bg-accent-hover text-white rounded-lg transition-colors glow-red-hover"
         >
           <Plus className="w-4 h-4" />
-          New Site
+          Новый сайт
         </button>
       </div>
 
-      {/* Filters */}
+      {/* Фильтры */}
       <div className="glass rounded-xl border border-white/5 p-4">
         <div className="flex items-center gap-4">
           <div className="relative flex-1 max-w-md">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
             <input
               type="text"
-              placeholder="Search sites..."
+              placeholder="Поиск сайтов..."
               value={searchQuery}
               onChange={(e) => {
                 setSearchQuery(e.target.value);
@@ -79,7 +81,7 @@ export function Sites() {
         </div>
       </div>
 
-      {/* Table */}
+      {/* Таблица */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -89,13 +91,13 @@ export function Sites() {
           <table className="w-full">
             <thead>
               <tr className="border-b border-white/5 bg-background-dark/50">
-                <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Name</th>
-                <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Domain</th>
-                <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Type</th>
-                <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Products</th>
-                <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Articles</th>
-                <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Status</th>
-                <th className="text-right px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Actions</th>
+                <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Название</th>
+                <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Домен</th>
+                <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Тип</th>
+                <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Товары</th>
+                <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Статьи</th>
+                <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Статус</th>
+                <th className="text-right px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Действия</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/5">
@@ -123,7 +125,7 @@ export function Sites() {
                       <span className={`inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium ${
                         site.type === 'product' ? 'bg-purple-500/10 text-purple-500' : 'bg-cyan-500/10 text-cyan-500'
                       }`}>
-                        {site.type}
+                        {site.type === 'product' ? 'Товарный' : 'Статейный'}
                       </span>
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-400">{Math.floor(Math.random() * 500)}</td>
@@ -151,11 +153,11 @@ export function Sites() {
           </table>
         </div>
 
-        {/* Pagination */}
+        {/* Пагинация */}
         {totalPages > 1 && (
           <div className="flex items-center justify-between px-6 py-4 border-t border-white/5">
             <p className="text-sm text-gray-400">
-              Showing {(currentPage - 1) * itemsPerPage + 1} to {Math.min(currentPage * itemsPerPage, filteredSites.length)} of {filteredSites.length} sites
+              Показано {(currentPage - 1) * itemsPerPage + 1} - {Math.min(currentPage * itemsPerPage, filteredSites.length)} из {filteredSites.length} сайтов
             </p>
             <div className="flex items-center gap-2">
               <button
@@ -190,26 +192,26 @@ export function Sites() {
         )}
       </motion.div>
 
-      {/* Create Site Modal */}
+      {/* Модальное окно создания сайта */}
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        title="Create New Site"
+        title="Создание нового сайта"
         size="md"
       >
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">Site Name</label>
+            <label className="block text-sm font-medium text-gray-300 mb-2">Название сайта</label>
             <input
               type="text"
               value={newSite.name}
               onChange={(e) => setNewSite({ ...newSite, name: e.target.value })}
-              placeholder="Enter site name"
+              placeholder="Введите название сайта"
               className="w-full px-4 py-2 bg-background-dark border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-accent/50 transition-colors"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">Domain</label>
+            <label className="block text-sm font-medium text-gray-300 mb-2">Домен</label>
             <input
               type="text"
               value={newSite.domain}
@@ -219,7 +221,7 @@ export function Sites() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">Site Type</label>
+            <label className="block text-sm font-medium text-gray-300 mb-2">Тип сайта</label>
             <div className="flex gap-3">
               <button
                 onClick={() => setNewSite({ ...newSite, type: 'product' })}
@@ -229,7 +231,7 @@ export function Sites() {
                     : 'bg-background-dark border-white/10 text-gray-400 hover:border-white/20'
                 }`}
               >
-                Product Site
+                Товарный сайт
               </button>
               <button
                 onClick={() => setNewSite({ ...newSite, type: 'article' })}
@@ -239,7 +241,7 @@ export function Sites() {
                     : 'bg-background-dark border-white/10 text-gray-400 hover:border-white/20'
                 }`}
               >
-                Article Site
+                Статейный сайт
               </button>
             </div>
           </div>
@@ -248,13 +250,13 @@ export function Sites() {
               onClick={() => setIsModalOpen(false)}
               className="flex-1 px-4 py-2 bg-background-dark border border-white/10 rounded-lg text-white hover:bg-white/5 transition-colors"
             >
-              Cancel
+              Отмена
             </button>
             <button
               onClick={handleCreateSite}
               className="flex-1 px-4 py-2 bg-accent hover:bg-accent-hover text-white rounded-lg transition-colors"
             >
-              Create Site
+              Создать сайт
             </button>
           </div>
         </div>

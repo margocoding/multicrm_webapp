@@ -61,15 +61,15 @@ export function Products() {
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white">Products</h1>
-          <p className="text-gray-400 text-sm mt-1">Manage your product catalog</p>
+          <h1 className="text-2xl font-bold text-white">Товары</h1>
+          <p className="text-gray-400 text-sm mt-1">Управление каталогом товаров</p>
         </div>
         <button
           onClick={() => setIsModalOpen(true)}
           className="flex items-center gap-2 px-4 py-2 bg-accent hover:bg-accent-hover text-white rounded-lg transition-colors glow-red-hover"
         >
           <Plus className="w-4 h-4" />
-          New Product
+          Новый товар
         </button>
       </div>
 
@@ -80,7 +80,7 @@ export function Products() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
             <input
               type="text"
-              placeholder="Search products..."
+              placeholder="Поиск товаров..."
               value={searchQuery}
               onChange={(e) => {
                 setSearchQuery(e.target.value);
@@ -99,7 +99,7 @@ export function Products() {
           >
             {categories.map(cat => (
               <option key={cat} value={cat}>
-                {cat === 'all' ? 'All Categories' : cat}
+                {cat === 'all' ? 'Все категории' : cat}
               </option>
             ))}
           </select>
@@ -116,13 +116,13 @@ export function Products() {
           <table className="w-full">
             <thead>
               <tr className="border-b border-white/5 bg-background-dark/50">
-                <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Product</th>
-                <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Category</th>
-                <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Price</th>
-                <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">External ID</th>
-                <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Published Sites</th>
-                <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Status</th>
-                <th className="text-right px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Actions</th>
+                <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Товар</th>
+                <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Категория</th>
+                <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Цена</th>
+                <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Внешний ID</th>
+                <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Опубликовано на сайтах</th>
+                <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Статус</th>
+                <th className="text-right px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Действия</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/5">
@@ -163,7 +163,7 @@ export function Products() {
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-2">
                         <Package className="w-4 h-4 text-gray-400" />
-                        <span className="text-sm text-gray-300">{getPublishedSitesCount(product.id)} sites</span>
+                        <span className="text-sm text-gray-300">{getPublishedSitesCount(product.id)} сайтов</span>
                       </div>
                     </td>
                     <td className="px-6 py-4">
@@ -193,7 +193,7 @@ export function Products() {
         {totalPages > 1 && (
           <div className="flex items-center justify-between px-6 py-4 border-t border-white/5">
             <p className="text-sm text-gray-400">
-              Showing {(currentPage - 1) * itemsPerPage + 1} to {Math.min(currentPage * itemsPerPage, filteredProducts.length)} of {filteredProducts.length} products
+              Показано {(currentPage - 1) * itemsPerPage + 1} - {Math.min(currentPage * itemsPerPage, filteredProducts.length)} из {filteredProducts.length} товаров
             </p>
             <div className="flex items-center gap-2">
               <button
@@ -244,33 +244,33 @@ export function Products() {
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        title="Create New Product"
+        title="Создать новый товар"
         size="lg"
       >
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">Product Title</label>
+            <label className="block text-sm font-medium text-gray-300 mb-2">Название товара</label>
             <input
               type="text"
               value={newProduct.title}
               onChange={(e) => setNewProduct({ ...newProduct, title: e.target.value })}
-              placeholder="Enter product title"
+              placeholder="Введите название товара"
               className="w-full px-4 py-2 bg-background-dark border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-accent/50 transition-colors"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">Description</label>
+            <label className="block text-sm font-medium text-gray-300 mb-2">Описание</label>
             <textarea
               value={newProduct.description}
               onChange={(e) => setNewProduct({ ...newProduct, description: e.target.value })}
-              placeholder="Enter product description"
+              placeholder="Введите описание товара"
               rows={3}
               className="w-full px-4 py-2 bg-background-dark border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-accent/50 transition-colors resize-none"
             />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Price</label>
+              <label className="block text-sm font-medium text-gray-300 mb-2">Цена</label>
               <input
                 type="number"
                 value={newProduct.price}
@@ -281,12 +281,12 @@ export function Products() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Category</label>
+              <label className="block text-sm font-medium text-gray-300 mb-2">Категория</label>
               <input
                 type="text"
                 value={newProduct.category}
                 onChange={(e) => setNewProduct({ ...newProduct, category: e.target.value })}
-                placeholder="Enter category"
+                placeholder="Введите категорию"
                 className="w-full px-4 py-2 bg-background-dark border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-accent/50 transition-colors"
               />
             </div>
@@ -296,13 +296,13 @@ export function Products() {
               onClick={() => setIsModalOpen(false)}
               className="flex-1 px-4 py-2 bg-background-dark border border-white/10 rounded-lg text-white hover:bg-white/5 transition-colors"
             >
-              Cancel
+              Отмена
             </button>
             <button
               onClick={handleCreateProduct}
               className="flex-1 px-4 py-2 bg-accent hover:bg-accent-hover text-white rounded-lg transition-colors"
             >
-              Create Product
+              Создать товар
             </button>
           </div>
         </div>
