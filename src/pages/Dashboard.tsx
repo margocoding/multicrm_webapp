@@ -9,7 +9,7 @@ import { Badge } from '../components/ui/Badge';
 
 export function Dashboard() {
   const { sites, products, imports, articles, activityLogs } = useAppStore();
-
+  
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -17,7 +17,7 @@ export function Dashboard() {
       transition: { staggerChildren: 0.1 },
     },
   };
-
+  
   return (
     <motion.div
       initial="hidden"
@@ -25,53 +25,53 @@ export function Dashboard() {
       variants={containerVariants}
       className="space-y-6"
     >
-      {/* Page Header */}
+      {/* Заголовок страницы */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white">Dashboard</h1>
-          <p className="text-gray-400 text-sm mt-1">Overview of your multi-site network</p>
+          <h1 className="text-2xl font-bold text-white">Панель управления</h1>
+          <p className="text-gray-400 text-sm mt-1">Обзор сети ваших сайтов</p>
         </div>
       </div>
 
-      {/* KPI Cards */}
+      {/* KPI карточки */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <KPICard
-          title="Active Sites"
+          title="Активные сайты"
           value={sites.length}
-          change="+2 this month"
+          change="+2 за месяц"
           trend="up"
           icon={<Globe className="w-5 h-5" />}
         />
         <KPICard
-          title="Total Products"
+          title="Всего товаров"
           value={products.length}
-          change="+124 this week"
+          change="+124 за неделю"
           trend="up"
           icon={<Package className="w-5 h-5" />}
         />
         <KPICard
-          title="Active Imports"
+          title="Активные импорты"
           value={imports.filter(i => i.status === 'processing').length}
-          change={`${imports.filter(i => i.status === 'completed').length} completed`}
+          change={`${imports.filter(i => i.status === 'completed').length} завершено`}
           trend="neutral"
           icon={<FileUp className="w-5 h-5" />}
         />
         <KPICard
-          title="Published Articles"
+          title="Опубликовано статей"
           value={articles.length}
-          change="+5 today"
+          change="+5 сегодня"
           trend="up"
           icon={<FileText className="w-5 h-5" />}
         />
       </div>
 
-      {/* Main Content Grid */}
+      {/* Основная сетка контента */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Latest Imports */}
+        {/* Последние импорты */}
         <motion.div variants={containerVariants} className="lg:col-span-2">
           <Card>
             <div className="px-6 py-4 border-b border-white/10 flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-white">Latest Imports</h2>
+              <h2 className="text-lg font-semibold text-white">Последние импорты</h2>
               <StatusBadge status="synced" size="sm" />
             </div>
             <CardContent>
@@ -92,7 +92,7 @@ export function Dashboard() {
                       </div>
                     </div>
                     <div className="flex items-center gap-4">
-                      <span className="text-gray-400 text-sm">{imp.productsCount} products</span>
+                      <span className="text-gray-400 text-sm">{imp.productsCount} тов.</span>
                       <StatusBadge 
                         status={imp.status === 'completed' ? 'synced' : imp.status === 'processing' ? 'processing' : 'failed'} 
                         size="sm" 
@@ -105,12 +105,12 @@ export function Dashboard() {
           </Card>
         </motion.div>
 
-        {/* Activity Feed */}
+        {/* Лента активности */}
         <motion.div variants={containerVariants}>
           <Card>
             <div className="px-6 py-4 border-b border-white/10 flex items-center gap-2">
               <Activity className="w-5 h-5 text-red-400" />
-              <h2 className="text-lg font-semibold text-white">Activity Feed</h2>
+              <h2 className="text-lg font-semibold text-white">Лента активности</h2>
             </div>
             <CardContent>
               <div className="relative">
@@ -149,19 +149,19 @@ export function Dashboard() {
         </motion.div>
       </div>
 
-      {/* Sites Overview */}
+      {/* Обзор сайтов */}
       <motion.div variants={containerVariants}>
         <Card>
           <div className="px-6 py-4 border-b border-white/10">
-            <h2 className="text-lg font-semibold text-white">Sites Overview</h2>
+            <h2 className="text-lg font-semibold text-white">Обзор сайтов</h2>
           </div>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableCell variant="header">Site Name</TableCell>
-                <TableCell variant="header">Domain</TableCell>
-                <TableCell variant="header">Type</TableCell>
-                <TableCell variant="header">Status</TableCell>
+                <TableCell variant="header">Название сайта</TableCell>
+                <TableCell variant="header">Домен</TableCell>
+                <TableCell variant="header">Тип</TableCell>
+                <TableCell variant="header">Статус</TableCell>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -171,7 +171,7 @@ export function Dashboard() {
                   <TableCell className="text-gray-400">{site.domain}</TableCell>
                   <TableCell>
                     <Badge variant={site.type === 'product' ? 'info' : 'neutral'} size="sm">
-                      {site.type}
+                      {site.type === 'product' ? 'Товарный' : 'Статейный'}
                     </Badge>
                   </TableCell>
                   <TableCell>

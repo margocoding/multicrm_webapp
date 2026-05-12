@@ -6,6 +6,7 @@ import type { Article } from '../types';
 import { StatusBadge } from '../components/ui/StatusBadge';
 import { Modal } from '../components/ui/Modal';
 
+
 export function Articles() {
   const { articles, articleSites, addArticle, deleteArticle } = useAppStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -48,29 +49,29 @@ export function Articles() {
 
   return (
     <div className="space-y-6">
-      {/* Page Header */}
+      {/* Заголовок страницы */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white">Articles</h1>
-          <p className="text-gray-400 text-sm mt-1">Manage your content articles</p>
+          <h1 className="text-2xl font-bold text-white">Статьи</h1>
+          <p className="text-gray-400 text-sm mt-1">Управление контентными статьями</p>
         </div>
         <button
           onClick={() => setIsModalOpen(true)}
           className="flex items-center gap-2 px-4 py-2 bg-accent hover:bg-accent-hover text-white rounded-lg transition-colors glow-red-hover"
         >
           <Plus className="w-4 h-4" />
-          New Article
+          Новая статья
         </button>
       </div>
 
-      {/* Filters */}
+      {/* Фильтры */}
       <div className="glass rounded-xl border border-white/5 p-4">
         <div className="flex items-center gap-4">
           <div className="relative flex-1 max-w-md">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
             <input
               type="text"
-              placeholder="Search articles..."
+              placeholder="Поиск статей..."
               value={searchQuery}
               onChange={(e) => {
                 setSearchQuery(e.target.value);
@@ -82,7 +83,7 @@ export function Articles() {
         </div>
       </div>
 
-      {/* Table */}
+      {/* Таблица */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -92,11 +93,11 @@ export function Articles() {
           <table className="w-full">
             <thead>
               <tr className="border-b border-white/5 bg-background-dark/50">
-                <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Title</th>
-                <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Created</th>
-                <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Published Sites</th>
-                <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Status</th>
-                <th className="text-right px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Actions</th>
+                <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Заголовок</th>
+                <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Создана</th>
+                <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Опубликовано на сайтах</th>
+                <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Статус</th>
+                <th className="text-right px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Действия</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/5">
@@ -124,7 +125,7 @@ export function Articles() {
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-400">{new Date(article.createdAt).toLocaleDateString()}</td>
                     <td className="px-6 py-4">
-                      <span className="text-sm text-gray-300">{getPublishedSitesCount(article.id)} sites</span>
+                      <span className="text-sm text-gray-300">{getPublishedSitesCount(article.id)} сайт.</span>
                     </td>
                     <td className="px-6 py-4">
                       <StatusBadge status={getPublishedSitesCount(article.id) > 0 ? 'published' : 'draft'} size="sm" />
@@ -149,11 +150,11 @@ export function Articles() {
           </table>
         </div>
 
-        {/* Pagination */}
+        {/* Пагинация */}
         {totalPages > 1 && (
           <div className="flex items-center justify-between px-6 py-4 border-t border-white/5">
             <p className="text-sm text-gray-400">
-              Showing {(currentPage - 1) * itemsPerPage + 1} to {Math.min(currentPage * itemsPerPage, filteredArticles.length)} of {filteredArticles.length} articles
+              Показано {(currentPage - 1) * itemsPerPage + 1} - {Math.min(currentPage * itemsPerPage, filteredArticles.length)} из {filteredArticles.length} статей
             </p>
             <div className="flex items-center gap-2">
               <button
@@ -188,30 +189,30 @@ export function Articles() {
         )}
       </motion.div>
 
-      {/* Create Article Modal */}
+      {/* Модальное окно создания статьи */}
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        title="Create New Article"
+        title="Создание новой статьи"
         size="lg"
       >
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">Title</label>
+            <label className="block text-sm font-medium text-gray-300 mb-2">Заголовок</label>
             <input
               type="text"
               value={newArticle.title}
               onChange={(e) => setNewArticle({ ...newArticle, title: e.target.value })}
-              placeholder="Enter article title"
+              placeholder="Введите заголовок статьи"
               className="w-full px-4 py-2 bg-background-dark border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-accent/50 transition-colors"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">Content</label>
+            <label className="block text-sm font-medium text-gray-300 mb-2">Содержание</label>
             <textarea
               value={newArticle.content}
               onChange={(e) => setNewArticle({ ...newArticle, content: e.target.value })}
-              placeholder="Write your article content..."
+              placeholder="Напишите содержание статьи..."
               rows={8}
               className="w-full px-4 py-2 bg-background-dark border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-accent/50 transition-colors resize-none font-mono text-sm"
             />
@@ -221,13 +222,13 @@ export function Articles() {
               onClick={() => setIsModalOpen(false)}
               className="flex-1 px-4 py-2 bg-background-dark border border-white/10 rounded-lg text-white hover:bg-white/5 transition-colors"
             >
-              Cancel
+              Отмена
             </button>
             <button
               onClick={handleCreateArticle}
               className="flex-1 px-4 py-2 bg-accent hover:bg-accent-hover text-white rounded-lg transition-colors"
             >
-              Create Article
+              Создать статью
             </button>
           </div>
         </div>
