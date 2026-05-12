@@ -111,13 +111,12 @@ export function Products() {
         animate={{ opacity: 1, y: 0 }}
         className="glass rounded-xl border border-white/5 overflow-hidden"
       >
-        <div className="overflow-x-auto">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableCell variant="header">Товар</TableCell>
-                <TableCell variant="header" className="hidden sm:table-cell">Категория</TableCell>
-                <TableCell variant="header">Цена</TableCell>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableCell variant="header">Товар</TableCell>
+              <TableCell variant="header" className="hidden sm:table-cell">Категория</TableCell>
+              <TableCell variant="header">Цена</TableCell>
                 <TableCell variant="header" className="hidden md:table-cell">Внешний ID</TableCell>
                 <TableCell variant="header" className="hidden lg:table-cell">Опубликовано на сайтах</TableCell>
                 <TableCell variant="header">Статус</TableCell>
@@ -188,7 +187,6 @@ export function Products() {
               </AnimatePresence>
             </TableBody>
           </Table>
-        </div>
 
         {/* Pagination */}
         {totalPages > 1 && (
@@ -239,7 +237,6 @@ export function Products() {
             </div>
           </div>
         )}
-      </motion.div>
 
       {/* Create Product Modal */}
       <Modal
