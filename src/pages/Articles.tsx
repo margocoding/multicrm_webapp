@@ -88,21 +88,19 @@ export function Articles() {
         animate={{ opacity: 1, y: 0 }}
         className="glass rounded-xl border border-white/5 overflow-hidden"
       >
-        <div className="overflow-x-auto -mx-4 lg:mx-0">
-          <div className="min-w-[700px] lg:min-w-0 px-4 lg:px-0">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableCell variant="header">Заголовок</TableCell>
-                  <TableCell variant="header" className="hidden sm:table-cell">Создана</TableCell>
-                  <TableCell variant="header">Опубликовано на сайтах</TableCell>
-                  <TableCell variant="header">Статус</TableCell>
-                  <TableCell variant="header" className="text-right">Действия</TableCell>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                <AnimatePresence>
-                  {paginatedArticles.map((article, index) => (
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableCell variant="header">Заголовок</TableCell>
+              <TableCell variant="header" className="hidden sm:table-cell">Создана</TableCell>
+              <TableCell variant="header">Опубликовано на сайтах</TableCell>
+              <TableCell variant="header">Статус</TableCell>
+              <TableCell variant="header" className="text-right">Действия</TableCell>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            <AnimatePresence>
+              {paginatedArticles.map((article, index) => (
                     <motion.tr
                       key={article.id}
                       initial={{ opacity: 0, y: 10 }}
@@ -150,8 +148,6 @@ export function Articles() {
                 </AnimatePresence>
               </TableBody>
             </Table>
-          </div>
-        </div>
 
         {/* Пагинация */}
         {totalPages > 1 && (
@@ -190,7 +186,6 @@ export function Articles() {
             </div>
           </div>
         )}
-      </motion.div>
 
       {/* Модальное окно создания статьи */}
       <Modal

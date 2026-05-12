@@ -86,18 +86,17 @@ export function Sites() {
         animate={{ opacity: 1, y: 0 }}
         className="glass rounded-xl border border-white/5 overflow-hidden"
       >
-        <div className="overflow-x-auto">
-          <Table className="">
-            <TableHeader>
-              <TableRow>
-                <TableCell variant="header">Название</TableCell>
-                <TableCell variant="header">Домен</TableCell>
-                <TableCell variant="header">Тип</TableCell>
-                <TableCell variant="header" className="hidden sm:table-cell">Товары</TableCell>
-                <TableCell variant="header" className="hidden sm:table-cell">Статьи</TableCell>
-                <TableCell variant="header">Статус</TableCell>
-                <TableCell variant="header" className="text-right">Действия</TableCell>
-              </TableRow>
+        <Table className="">
+          <TableHeader>
+            <TableRow>
+              <TableCell variant="header">Название</TableCell>
+              <TableCell variant="header">Домен</TableCell>
+              <TableCell variant="header">Тип</TableCell>
+              <TableCell variant="header" className="hidden sm:table-cell">Товары</TableCell>
+              <TableCell variant="header" className="hidden sm:table-cell">Статьи</TableCell>
+              <TableCell variant="header">Статус</TableCell>
+              <TableCell variant="header" className="text-right">Действия</TableCell>
+            </TableRow>
             </TableHeader>
             <TableBody>
               <AnimatePresence>
@@ -152,7 +151,6 @@ export function Sites() {
               </AnimatePresence>
             </TableBody>
           </Table>
-        </div>
 
         {/* Пагинация */}
         {totalPages > 1 && (
