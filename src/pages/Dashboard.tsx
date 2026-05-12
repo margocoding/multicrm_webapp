@@ -155,36 +155,32 @@ export function Dashboard() {
           <div className="px-4 lg:px-6 py-4 border-b border-white/10">
             <h2 className="text-base lg:text-lg font-semibold text-white">Обзор сайтов</h2>
           </div>
-          <div className="overflow-x-auto -mx-4 lg:mx-0">
-            <div className="min-w-[600px] lg:min-w-0 px-4 lg:px-0">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableCell variant="header">Название сайта</TableCell>
-                    <TableCell variant="header">Домен</TableCell>
-                    <TableCell variant="header">Тип</TableCell>
-                    <TableCell variant="header">Статус</TableCell>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {sites.map((site) => (
-                    <TableRow key={site.id}>
-                      <TableCell className="font-medium text-white text-xs lg:text-sm">{site.name}</TableCell>
-                      <TableCell className="text-gray-400 text-xs lg:text-sm">{site.domain}</TableCell>
-                      <TableCell>
-                        <Badge variant={site.type === 'product' ? 'info' : 'neutral'} size="sm">
-                          {site.type === 'product' ? 'Товарный' : 'Статейный'}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <StatusBadge status="live" size="sm" />
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          </div>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableCell variant="header">Название сайта</TableCell>
+                <TableCell variant="header">Домен</TableCell>
+                <TableCell variant="header">Тип</TableCell>
+                <TableCell variant="header">Статус</TableCell>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {sites.map((site) => (
+                <TableRow key={site.id}>
+                  <TableCell className="font-medium text-white text-xs lg:text-sm">{site.name}</TableCell>
+                  <TableCell className="text-gray-400 text-xs lg:text-sm">{site.domain}</TableCell>
+                  <TableCell>
+                    <Badge variant={site.type === 'product' ? 'info' : 'neutral'} size="sm">
+                      {site.type === 'product' ? 'Товарный' : 'Статейный'}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>
+                    <StatusBadge status="live" size="sm" />
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         </Card>
       </motion.div>
     </motion.div>

@@ -109,10 +109,9 @@ export function Products() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="glass rounded-xl border border-white/5 overflow-hidden"
+        className="glass rounded-xl border border-white/5"
       >
-        <div className="overflow-x-auto">
-          <Table>
+        <Table>
           <TableHeader>
             <TableRow>
               <TableCell variant="header">Товар</TableCell>
@@ -188,7 +187,6 @@ export function Products() {
               </AnimatePresence>
             </TableBody>
           </Table>
-        </div>
 
         {/* Pagination */}
         {totalPages > 1 && (

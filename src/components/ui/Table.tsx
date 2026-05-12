@@ -7,10 +7,8 @@ export interface TableProps {
 
 export function Table({ children, className }: TableProps) {
   return (
-    <div className={cn('overflow-x-auto', className)}>
-      <div className="overflow-hidden rounded-xl border border-white/10">
-        <table className="w-full">{children}</table>
-      </div>
+    <div className={cn('w-full overflow-x-auto', className)}>
+      <table className="w-full border-collapse">{children}</table>
     </div>
   );
 }

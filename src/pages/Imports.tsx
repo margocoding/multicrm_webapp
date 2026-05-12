@@ -107,93 +107,91 @@ export function Imports() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="glass rounded-xl border border-white/5 overflow-hidden"
+        className="glass rounded-xl border border-white/5"
       >
-        <div className="overflow-x-auto">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableCell variant="header">Import Name</TableCell>
-                <TableCell variant="header">Type</TableCell>
-                <TableCell variant="header">Created</TableCell>
-                <TableCell variant="header">Products</TableCell>
-                <TableCell variant="header">Target Sites</TableCell>
-                <TableCell variant="header">Status</TableCell>
-                <TableCell variant="header" className="text-right">Actions</TableCell>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              <AnimatePresence>
-                {imports.map((imp, index) => (
-                  <motion.tr
-                    key={imp.id}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, x: -10 }}
-                    transition={{ delay: index * 0.05 }}
-                    whileHover={{ backgroundColor: 'rgba(220, 38, 38, 0.05)' }}
-                    className="table-row-hover"
-                  >
-                    <TableCell>
-                      <div className="flex items-center gap-3">
-                        <div className={`p-2 rounded-lg ${imp.type === 'xml' ? 'bg-orange-500/10 text-orange-500' : 'bg-blue-500/10 text-blue-500'}`}>
-                          <File className="w-4 h-4" />
-                        </div>
-                        <span className="text-white font-medium">{imp.name}</span>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableCell variant="header">Import Name</TableCell>
+              <TableCell variant="header">Type</TableCell>
+              <TableCell variant="header">Created</TableCell>
+              <TableCell variant="header">Products</TableCell>
+              <TableCell variant="header">Target Sites</TableCell>
+              <TableCell variant="header">Status</TableCell>
+              <TableCell variant="header" className="text-right">Actions</TableCell>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            <AnimatePresence>
+              {imports.map((imp, index) => (
+                <motion.tr
+                  key={imp.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, x: -10 }}
+                  transition={{ delay: index * 0.05 }}
+                  whileHover={{ backgroundColor: 'rgba(220, 38, 38, 0.05)' }}
+                  className="table-row-hover"
+                >
+                  <TableCell>
+                    <div className="flex items-center gap-3">
+                      <div className={`p-2 rounded-lg ${imp.type === 'xml' ? 'bg-orange-500/10 text-orange-500' : 'bg-blue-500/10 text-blue-500'}`}>
+                        <File className="w-4 h-4" />
                       </div>
-                    </TableCell>
-                    <TableCell>
-                      <span className={`inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium uppercase ${
-                        imp.type === 'xml' ? 'bg-orange-500/10 text-orange-400' : 'bg-blue-500/10 text-blue-400'
-                      }`}>
-                        {imp.type}
-                      </span>
-                    </TableCell>
-                    <TableCell className="text-sm text-gray-400">{new Date(imp.createdAt).toLocaleDateString()}</TableCell>
-                    <TableCell className="text-sm text-white font-medium">{imp.productsCount}</TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-1">
-                        <Globe className="w-3.5 h-3.5 text-gray-400" />
-                        <span className="text-sm text-gray-300">{imp.targetSiteIds.length} sites</span>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <StatusBadge 
-                        status={imp.status === 'completed' ? 'synced' : imp.status === 'processing' ? 'processing' : 'failed'} 
-                        size="sm" 
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center justify-end gap-2">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="text-xs"
-                          onClick={() => {
-                            addActivityLog({
-                              message: `Publishing import "${imp.name}" to additional sites`,
-                              type: 'info',
-                            });
-                          }}
-                        >
-                          Publish
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="hover:bg-red-500/10 hover:text-red-500"
-                          onClick={() => deleteImport(imp.id)}
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </motion.tr>
-                ))}
-              </AnimatePresence>
-            </TableBody>
-          </Table>
-        </div>
+                      <span className="text-white font-medium">{imp.name}</span>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <span className={`inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium uppercase ${
+                      imp.type === 'xml' ? 'bg-orange-500/10 text-orange-400' : 'bg-blue-500/10 text-blue-400'
+                    }`}>
+                      {imp.type}
+                    </span>
+                  </TableCell>
+                  <TableCell className="text-sm text-gray-400">{new Date(imp.createdAt).toLocaleDateString()}</TableCell>
+                  <TableCell className="text-sm text-white font-medium">{imp.productsCount}</TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-1">
+                      <Globe className="w-3.5 h-3.5 text-gray-400" />
+                      <span className="text-sm text-gray-300">{imp.targetSiteIds.length} sites</span>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <StatusBadge 
+                      status={imp.status === 'completed' ? 'synced' : imp.status === 'processing' ? 'processing' : 'failed'} 
+                      size="sm" 
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center justify-end gap-2">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-xs"
+                        onClick={() => {
+                          addActivityLog({
+                            message: `Publishing import "${imp.name}" to additional sites`,
+                            type: 'info',
+                          });
+                        }}
+                      >
+                        Publish
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="hover:bg-red-500/10 hover:text-red-500"
+                        onClick={() => deleteImport(imp.id)}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </TableCell>
+                </motion.tr>
+              ))}
+            </AnimatePresence>
+          </TableBody>
+        </Table>
       </motion.div>
 
       {/* Import Wizard Modal */}
