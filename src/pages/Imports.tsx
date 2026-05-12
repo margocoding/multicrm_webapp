@@ -5,6 +5,8 @@ import { useAppStore } from '../store/useAppStore';
 import type { ImportBatch } from '../types';
 import { StatusBadge } from '../components/ui/StatusBadge';
 import { Modal } from '../components/ui/Modal';
+import { Button } from '../components/ui/Button';
+import { Table, TableHeader, TableBody, TableRow, TableCell } from '../components/ui/Table';
 
 export function Imports() {
   const { imports, sites, addImport, deleteImport, addActivityLog } = useAppStore();
@@ -91,18 +93,14 @@ export function Imports() {
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white">Imports</h1>
+          <h1 className="text-xl lg:text-2xl font-bold text-white">Imports</h1>
           <p className="text-gray-400 text-sm mt-1">Manage XML/JSON product imports</p>
         </div>
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-accent hover:bg-accent-hover text-white rounded-lg transition-colors glow-red-hover"
-        >
-          <Plus className="w-4 h-4" />
+        <Button onClick={() => setIsModalOpen(true)} size="sm" leftIcon={<Plus className="w-4 h-4" />}>
           New Import
-        </button>
+        </Button>
       </div>
 
       {/* Imports Table */}
@@ -112,19 +110,19 @@ export function Imports() {
         className="glass rounded-xl border border-white/5 overflow-hidden"
       >
         <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-white/5 bg-background-dark/50">
-                <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Import Name</th>
-                <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Type</th>
-                <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Created</th>
-                <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Products</th>
-                <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Target Sites</th>
-                <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Status</th>
-                <th className="text-right px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-white/5">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableCell variant="header">Import Name</TableCell>
+                <TableCell variant="header">Type</TableCell>
+                <TableCell variant="header">Created</TableCell>
+                <TableCell variant="header">Products</TableCell>
+                <TableCell variant="header">Target Sites</TableCell>
+                <TableCell variant="header">Status</TableCell>
+                <TableCell variant="header" className="text-right">Actions</TableCell>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               <AnimatePresence>
                 {imports.map((imp, index) => (
                   <motion.tr
@@ -136,61 +134,65 @@ export function Imports() {
                     whileHover={{ backgroundColor: 'rgba(220, 38, 38, 0.05)' }}
                     className="table-row-hover"
                   >
-                    <td className="px-6 py-4">
+                    <TableCell>
                       <div className="flex items-center gap-3">
                         <div className={`p-2 rounded-lg ${imp.type === 'xml' ? 'bg-orange-500/10 text-orange-500' : 'bg-blue-500/10 text-blue-500'}`}>
                           <File className="w-4 h-4" />
                         </div>
                         <span className="text-white font-medium">{imp.name}</span>
                       </div>
-                    </td>
-                    <td className="px-6 py-4">
+                    </TableCell>
+                    <TableCell>
                       <span className={`inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium uppercase ${
                         imp.type === 'xml' ? 'bg-orange-500/10 text-orange-400' : 'bg-blue-500/10 text-blue-400'
                       }`}>
                         {imp.type}
                       </span>
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-400">{new Date(imp.createdAt).toLocaleDateString()}</td>
-                    <td className="px-6 py-4 text-sm text-white font-medium">{imp.productsCount}</td>
-                    <td className="px-6 py-4">
+                    </TableCell>
+                    <TableCell className="text-sm text-gray-400">{new Date(imp.createdAt).toLocaleDateString()}</TableCell>
+                    <TableCell className="text-sm text-white font-medium">{imp.productsCount}</TableCell>
+                    <TableCell>
                       <div className="flex items-center gap-1">
                         <Globe className="w-3.5 h-3.5 text-gray-400" />
                         <span className="text-sm text-gray-300">{imp.targetSiteIds.length} sites</span>
                       </div>
-                    </td>
-                    <td className="px-6 py-4">
+                    </TableCell>
+                    <TableCell>
                       <StatusBadge 
                         status={imp.status === 'completed' ? 'synced' : imp.status === 'processing' ? 'processing' : 'failed'} 
                         size="sm" 
                       />
-                    </td>
-                    <td className="px-6 py-4">
+                    </TableCell>
+                    <TableCell>
                       <div className="flex items-center justify-end gap-2">
-                        <button
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="text-xs"
                           onClick={() => {
                             addActivityLog({
                               message: `Publishing import "${imp.name}" to additional sites`,
                               type: 'info',
                             });
                           }}
-                          className="p-1.5 hover:bg-white/10 rounded-lg transition-colors text-gray-400 hover:text-white text-xs"
                         >
                           Publish
-                        </button>
-                        <button
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="hover:bg-red-500/10 hover:text-red-500"
                           onClick={() => deleteImport(imp.id)}
-                          className="p-1.5 hover:bg-red-500/10 rounded-lg transition-colors text-gray-400 hover:text-red-500"
                         >
                           <Trash2 className="w-4 h-4" />
-                        </button>
+                        </Button>
                       </div>
-                    </td>
+                    </TableCell>
                   </motion.tr>
                 ))}
               </AnimatePresence>
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
       </motion.div>
 
