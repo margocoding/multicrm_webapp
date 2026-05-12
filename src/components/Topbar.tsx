@@ -1,6 +1,8 @@
 import { Search, Bell, RefreshCw } from 'lucide-react';
 import { useAppStore } from '../store/useAppStore';
-import { Input, Avatar, Badge } from './ui';
+import { Input } from './ui/Input';
+import { Avatar } from './ui/Avatar';
+import { Badge } from './ui/Badge';
 
 export function Topbar() {
   const { searchQuery, setSearchQuery } = useAppStore();

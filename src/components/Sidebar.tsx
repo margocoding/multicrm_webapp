@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import { useAppStore } from '../store/useAppStore';
 import { NavLink } from 'react-router-dom';
-import { Tooltip } from './ui';
+import { Tooltip } from './ui/Tooltip';
 
 const navItems = [
   { path: '/', icon: LayoutDashboard, label: 'Dashboard' },
