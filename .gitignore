@@ -7,7 +7,15 @@ dist/
 build/
 target/
 
-# Environment variables
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+venv/
+.venv/
 .env
 .env.local
 *.env.*
@@ -17,21 +25,22 @@ target/
 .idea/
 *.swp
 *.swo
-*.tmp
 
 # Logs
 *.log
 
-# Python cache (if present in project)
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
+# OS files
+.DS_Store
+Thumbs.db
 
-# Coverage reports
+# Coverage
 coverage/
 htmlcov/
 .coverage
+
+# Temporary files
+*.tmp
+*.temp
 
 # Compressed files
 *.zip
@@ -52,8 +61,4 @@ htmlcov/
 *.Z
 *.lz
 *.lzo
-*.tar.gz
-*.tar.bz2
-*.tar.xz
-*.tar.zst
 ```

@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { Card, Badge } from './ui';
 
 interface KPICardProps {
   title: string;
@@ -13,31 +14,41 @@ export function KPICard({ title, value, change, trend = 'neutral', icon }: KPICa
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      whileHover={{ scale: 1.02, y: -2 }}
-      className="glass rounded-xl p-5 border border-white/5 hover:border-accent/20 transition-all duration-300"
+      whileHover={{ scale: 1.02, y: -4 }}
+      transition={{ duration: 0.3 }}
     >
-      <div className="flex items-start justify-between">
-        <div>
-          <p className="text-gray-400 text-sm mb-1">{title}</p>
-          <motion.p
-            initial={{ scale: 0.9 }}
-            animate={{ scale: 1 }}
-            className="text-2xl font-bold text-white"
-          >
-            {value}
-          </motion.p>
-          {change && (
-            <p className={`text-xs mt-2 ${trend === 'up' ? 'text-green-500' : trend === 'down' ? 'text-red-500' : 'text-gray-500'}`}>
-              {trend === 'up' ? '↑' : trend === 'down' ? '↓' : '→'} {change}
-            </p>
+      <Card hover glow className="p-6">
+        <div className="flex items-start justify-between mb-4">
+          <div>
+            <p className="text-gray-400 text-sm font-medium mb-2">{title}</p>
+            <motion.p
+              initial={{ scale: 0.9 }}
+              animate={{ scale: 1 }}
+              className="text-3xl font-bold text-white tracking-tight"
+            >
+              {value}
+            </motion.p>
+          </div>
+          {icon && (
+            <div className="p-3 bg-gradient-to-br from-red-600/20 to-red-800/20 rounded-xl text-red-400 ring-1 ring-red-500/20">
+              {icon}
+            </div>
           )}
         </div>
-        {icon && (
-          <div className="p-2 bg-accent/10 rounded-lg text-accent">
-            {icon}
+        
+        {change && (
+          <div className={`flex items-center gap-1.5 text-xs font-medium ${
+            trend === 'up' ? 'text-emerald-400' : trend === 'down' ? 'text-red-400' : 'text-gray-500'
+          }`}>
+            <span className={`inline-flex items-center justify-center w-4 h-4 rounded-full ${
+              trend === 'up' ? 'bg-emerald-500/20' : trend === 'down' ? 'bg-red-500/20' : 'bg-gray-500/20'
+            }`}>
+              {trend === 'up' ? '↑' : trend === 'down' ? '↓' : '→'}
+            </span>
+            {change}
           </div>
         )}
-      </div>
+      </Card>
     </motion.div>
   );
 }
