@@ -3,6 +3,10 @@ export interface Site {
   name: string;
   domain: string;
   type: 'product' | 'article';
+  status: 'live' | 'draft' | 'archived';
+  productsCount: number;
+  articlesCount: number;
+  createdAt: string;
 }
 
 export interface Product {
@@ -13,6 +17,7 @@ export interface Product {
   price: number;
   image: string;
   category: string;
+  quantity: number;
 }
 
 export interface ImportBatch {

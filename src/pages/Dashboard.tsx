@@ -1,15 +1,68 @@
-import { motion } from 'framer-motion';
-import { Globe, Package, FileUp, FileText, Activity } from 'lucide-react';
-import { useAppStore } from '../store/useAppStore';
-import { KPICard } from '../components/ui/KPICard';
-import { StatusBadge } from '../components/ui/StatusBadge';
-import { Card, CardContent } from '../components/ui/Card';
-import { Table, TableHeader, TableBody, TableRow, TableCell } from '../components/ui/Table';
-import { Badge } from '../components/ui/Badge';
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import {
+  Globe,
+  Package,
+  FileUp,
+  FileText,
+  Activity,
+  ShoppingCart,
+} from "lucide-react";
+import { useAppStore } from "../store/useAppStore";
+
+import { sitesApi } from "../api/sites.api";
+import { productsApi } from "../api/products.api";
+import { ordersApi, type Order } from "../api/orders.api";
+import { logsApi, type ActivityLog } from "../api/logs.api"; // <-- Добавили импорт
+
+// UI Компоненты
+import { KPICard } from "../components/ui/KPICard";
+import { StatusBadge } from "../components/ui/StatusBadge";
+import { Card, CardContent } from "../components/ui/Card";
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableCell,
+} from "../components/ui/Table";
+import { Badge } from "../components/ui/Badge";
+import type { Site } from "../types";
 
 export function Dashboard() {
-  const { sites, products, imports, articles, activityLogs } = useAppStore();
-  
+  // Из стора берем то, для чего еще нет API (импорты, статьи)
+  const { imports, articles } = useAppStore();
+
+  const [sites, setSites] = useState<Site[]>([]);
+  const [totalProducts, setTotalProducts] = useState(0);
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [activityLogs, setActivityLogs] = useState<ActivityLog[]>([]); // <-- Локальный стейт для логов
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [sitesRes, productsRes, ordersRes, logsRes] = await Promise.all([
+          sitesApi.getAll({ limit: 100 }),
+          productsApi.getAll({ limit: 1 }), // Нам нужен только total
+          ordersApi.getAll(),
+          logsApi.getAll(), // <-- Добавили запрос логов
+        ]);
+
+        setSites(sitesRes.items);
+        setTotalProducts(productsRes.total);
+        setOrders(ordersRes);
+        setActivityLogs(logsRes); // <-- Сохранили логи в стейт
+      } catch (error) {
+        console.error("Ошибка загрузки дашборда:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -17,7 +70,23 @@ export function Dashboard() {
       transition: { staggerChildren: 0.1 },
     },
   };
-  
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
+      </div>
+    );
+  }
+
+  const newOrdersCount = orders.filter((o) => o.status === "NEW").length;
+  const activeImportsCount = imports.filter(
+    (i) => i.status === "processing",
+  ).length;
+  const completedImportsCount = imports.filter(
+    (i) => i.status === "completed",
+  ).length;
+
   return (
     <motion.div
       initial="hidden"
@@ -28,40 +97,51 @@ export function Dashboard() {
       {/* Заголовок страницы */}
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
-          <h1 className="text-xl lg:text-2xl font-bold text-white">Панель управления</h1>
-          <p className="text-gray-400 text-sm mt-1">Обзор сети ваших сайтов</p>
+          <h1 className="text-xl lg:text-2xl font-bold text-white">
+            Панель управления
+          </h1>
+          <p className="text-gray-400 text-sm mt-1">
+            Обзор сети ваших сайтов и заявок
+          </p>
         </div>
       </div>
 
       {/* KPI карточки */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <KPICard
-          title="Активные сайты"
+          title="Всего сайтов"
           value={sites.length}
-          change="+2 за месяц"
+          change="В системе"
           trend="up"
           icon={<Globe className="w-5 h-5" />}
         />
         <KPICard
           title="Всего товаров"
-          value={products.length}
-          change="+124 за неделю"
+          value={totalProducts}
+          change="В каталоге"
           trend="up"
           icon={<Package className="w-5 h-5" />}
         />
         <KPICard
           title="Активные импорты"
-          value={imports.filter(i => i.status === 'processing').length}
-          change={`${imports.filter(i => i.status === 'completed').length} завершено`}
+          value={activeImportsCount}
+          change={`${completedImportsCount} завершено`}
           trend="neutral"
           icon={<FileUp className="w-5 h-5" />}
         />
-        <KPICard
-          title="Опубликовано статей"
+        {/* <KPICard
+          title="Статьи"
           value={articles.length}
-          change="+5 сегодня"
+          change="Опубликовано"
           trend="up"
           icon={<FileText className="w-5 h-5" />}
+        /> */}
+        <KPICard
+          title="Новые заявки"
+          value={newOrdersCount}
+          change={`${orders.length} всего`}
+          trend={newOrdersCount > 0 ? "up" : "neutral"}
+          icon={<ShoppingCart className="w-5 h-5" />}
         />
       </div>
 
@@ -71,8 +151,10 @@ export function Dashboard() {
         <motion.div variants={containerVariants} className="lg:col-span-2">
           <Card>
             <div className="px-4 lg:px-6 py-4 border-b border-white/10 flex items-center justify-between flex-wrap gap-3">
-              <h2 className="text-base lg:text-lg font-semibold text-white">Последние импорты</h2>
-              <StatusBadge status="synced" size="sm" />
+              <h2 className="text-base lg:text-lg font-semibold text-white">
+                Последние импорты
+              </h2>
+              <StatusBadge status="live" size="sm" />
             </div>
             <CardContent className="p-4 lg:p-6">
               <div className="space-y-3">
@@ -80,22 +162,36 @@ export function Dashboard() {
                   <motion.div
                     key={imp.id}
                     whileHover={{ x: 4 }}
-                    className="flex flex-col sm:flex-row sm:items-center justify-between p-3 bg-white/[0.02] rounded-lg border border-white/5 gap-3 sm:gap-0"
+                    className="flex flex-col sm:flex-row sm:items-center justify-between p-3 bg-white/2 rounded-lg border border-white/5 gap-3 sm:gap-0"
                   >
                     <div className="flex items-center gap-3">
-                      <div className={`p-2 rounded-lg ${imp.type === 'xml' ? 'bg-orange-500/10 text-orange-500' : 'bg-blue-500/10 text-blue-500'}`}>
+                      <div
+                        className={`p-2 rounded-lg ${imp.type === "xml" ? "bg-orange-500/10 text-orange-500" : "bg-blue-500/10 text-blue-500"}`}
+                      >
                         <FileUp className="w-4 h-4" />
                       </div>
                       <div>
-                        <p className="text-white font-medium text-sm">{imp.name}</p>
-                        <p className="text-gray-500 text-xs">{new Date(imp.createdAt).toLocaleDateString()}</p>
+                        <p className="text-white font-medium text-sm">
+                          {imp.name}
+                        </p>
+                        <p className="text-gray-500 text-xs">
+                          {new Date(imp.createdAt).toLocaleDateString()}
+                        </p>
                       </div>
                     </div>
                     <div className="flex items-center gap-4 pl-14 sm:pl-0">
-                      <span className="text-gray-400 text-sm">{imp.productsCount} тов.</span>
-                      <StatusBadge 
-                        status={imp.status === 'completed' ? 'synced' : imp.status === 'processing' ? 'processing' : 'failed'} 
-                        size="sm" 
+                      <span className="text-gray-400 text-sm">
+                        {imp.productsCount} тов.
+                      </span>
+                      <StatusBadge
+                        status={
+                          imp.status === "completed"
+                            ? "live"
+                            : imp.status === "processing"
+                              ? "processing"
+                              : "failed"
+                        }
+                        size="sm"
                       />
                     </div>
                   </motion.div>
@@ -110,38 +206,77 @@ export function Dashboard() {
           <Card>
             <div className="px-6 py-4 border-b border-white/10 flex items-center gap-2">
               <Activity className="w-5 h-5 text-red-400" />
-              <h2 className="text-lg font-semibold text-white">Лента активности</h2>
+              <h2 className="text-lg font-semibold text-white">
+                Лента активности
+              </h2>
+              <span className="ml-auto text-xs text-gray-500">
+                {activityLogs.length} событий
+              </span>
             </div>
-            <CardContent>
-              <div className="relative">
-                <div className="absolute left-3 top-0 bottom-0 w-px bg-white/10"></div>
-                
-                <div className="space-y-4">
-                  {activityLogs.slice(0, 8).map((log, index) => (
-                    <motion.div
-                      key={log.id}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.05 }}
-                      className="relative pl-8"
-                    >
-                      <div className={`absolute left-0 top-1 w-6 h-6 rounded-full flex items-center justify-center ${
-                        log.type === 'success' ? 'bg-emerald-500/20 text-emerald-500' :
-                        log.type === 'error' ? 'bg-red-500/20 text-red-500' :
-                        log.type === 'warning' ? 'bg-amber-500/20 text-amber-500' :
-                        'bg-blue-500/20 text-blue-500'
-                      }`}>
-                        <div className="w-2 h-2 rounded-full bg-current"></div>
-                      </div>
-                      
-                      <div>
-                        <p className="text-gray-300 text-sm">{log.message}</p>
-                        <p className="text-gray-500 text-xs mt-1">
-                          {new Date(log.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                        </p>
-                      </div>
-                    </motion.div>
-                  ))}
+            <CardContent className="p-0">
+              {/* 
+        Контейнер со скроллом:
+        - max-h-[400px] (примерно 16rem) ограничивает высоту
+        - overflow-y-auto включает скролл при переполнении
+        - Кастомные стили для скроллбара
+      */}
+              <div
+                className="relative max-h-[400px] overflow-y-auto pr-2
+        [&::-webkit-scrollbar]:w-1.5
+        [&::-webkit-scrollbar-track]:bg-transparent
+        [&::-webkit-scrollbar-thumb]:bg-white/10
+        [&::-webkit-scrollbar-thumb]:rounded-full
+        [&::-webkit-scrollbar-thumb]:hover:bg-white/20
+      "
+              >
+                <div className="px-4 pt-4 pb-2 relative">
+                  <div className="absolute left-7 top-4 bottom-2 w-px bg-white/10"></div>
+
+                  {activityLogs.length === 0 && (
+                    <p className="text-gray-500 text-sm text-center py-8 pl-8">
+                      Пока нет активности
+                    </p>
+                  )}
+
+                  <div className="space-y-4 relative">
+                    {activityLogs.map((log, index) => (
+                      <motion.div
+                        key={log.id}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: index * 0.03 }} // Чуть быстрее, чтобы 50 элементов не анимировались вечность
+                        className="relative pl-8"
+                      >
+                        <div
+                          className={`absolute left-0 top-1 w-6 h-6 rounded-full flex items-center justify-center ${
+                            log.type === "success"
+                              ? "bg-emerald-500/20 text-emerald-500"
+                              : log.type === "error"
+                                ? "bg-red-500/20 text-red-500"
+                                : log.type === "warning"
+                                  ? "bg-amber-500/20 text-amber-500"
+                                  : "bg-blue-500/20 text-blue-500"
+                          }`}
+                        >
+                          <div className="w-2 h-2 rounded-full bg-current"></div>
+                        </div>
+
+                        <div>
+                          <p className="text-gray-300 text-sm leading-tight">
+                            {log.message}
+                          </p>
+                          <p className="text-gray-500 text-xs mt-0.5">
+                            {new Date(log.timestamp).toLocaleString("ru-RU", {
+                              day: "2-digit",
+                              month: "2-digit",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })}
+                          </p>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </CardContent>
@@ -153,7 +288,9 @@ export function Dashboard() {
       <motion.div variants={containerVariants}>
         <Card>
           <div className="px-4 lg:px-6 py-4 border-b border-white/10">
-            <h2 className="text-base lg:text-lg font-semibold text-white">Обзор сайтов</h2>
+            <h2 className="text-base lg:text-lg font-semibold text-white">
+              Обзор сайтов
+            </h2>
           </div>
           <Table>
             <TableHeader>
@@ -167,18 +304,35 @@ export function Dashboard() {
             <TableBody>
               {sites.map((site) => (
                 <TableRow key={site.id}>
-                  <TableCell className="font-medium text-white text-xs lg:text-sm">{site.name}</TableCell>
-                  <TableCell className="text-gray-400 text-xs lg:text-sm">{site.domain}</TableCell>
+                  <TableCell className="font-medium text-white text-xs lg:text-sm">
+                    {site.name}
+                  </TableCell>
+                  <TableCell className="text-gray-400 text-xs lg:text-sm">
+                    {site.domain}
+                  </TableCell>
                   <TableCell>
-                    <Badge variant={site.type === 'product' ? 'info' : 'neutral'} size="sm">
-                      {site.type === 'product' ? 'Товарный' : 'Статейный'}
+                    <Badge
+                      variant={site.type === "product" ? "info" : "success"}
+                      size="sm"
+                    >
+                      {site.type === "product" ? "Товарный" : "Статейный"}
                     </Badge>
                   </TableCell>
                   <TableCell>
-                    <StatusBadge status="live" size="sm" />
+                    <StatusBadge status={site.status} size="sm" />
                   </TableCell>
                 </TableRow>
               ))}
+              {sites.length === 0 && (
+                <TableRow>
+                  <TableCell
+                    colSpan={4}
+                    className="text-center text-gray-500 py-4"
+                  >
+                    Сайты не найдены
+                  </TableCell>
+                </TableRow>
+              )}
             </TableBody>
           </Table>
         </Card>

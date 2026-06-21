@@ -21,7 +21,8 @@ const navItems = [
   { path: "/sites", icon: Globe, label: "Сайты" },
   { path: "/products", icon: Package, label: "Товары" },
   { path: "/imports", icon: FileUp, label: "Импорт" },
-  { path: "/articles", icon: FileText, label: "Статьи" },
+  // { path: "/articles", icon: FileText, label: "Статьи" },
+  { path: "/orders", icon: FileText, label: "Заявки" },
   { path: "/settings", icon: Settings, label: "Настройки" },
 ];
 

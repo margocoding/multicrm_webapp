@@ -1,6 +1,6 @@
 import { Badge } from './Badge';
 
-export type StatusType = 'synced' | 'processing' | 'failed' | 'live' | 'draft' | 'published';
+export type StatusType = 'synced' | 'processing' | 'failed' | 'live' | 'draft' | 'archived' | 'published';
 
 export interface StatusBadgeProps {
   status: StatusType;
@@ -13,6 +13,7 @@ const statusConfig: Record<StatusType, { variant: 'success' | 'warning' | 'dange
   failed: { variant: 'danger', label: 'Ошибка' },
   live: { variant: 'success', label: 'Активен' },
   draft: { variant: 'neutral', label: 'Черновик' },
+  archived: { variant: 'neutral', label: 'Архив' },
   published: { variant: 'info', label: 'Опубликовано' },
 };
 
