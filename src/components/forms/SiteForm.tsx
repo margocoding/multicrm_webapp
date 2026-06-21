@@ -4,7 +4,7 @@ import { Globe } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 import { Select } from '../ui/Select';
-import type { Site } from '../../api/sites.api';
+import type { Site } from '../../types';
 
 export interface SiteFormData {
   name: string;
