@@ -11,7 +11,6 @@ import {
   Menu,
   X,
 } from "lucide-react";
-import { useAppStore } from "../store/useAppStore";
 import { NavLink } from "react-router-dom";
 import { Tooltip } from "./ui/Tooltip";
 import { useState } from "react";
@@ -27,7 +26,8 @@ const navItems = [
 ];
 
 export function Sidebar() {
-  const { sidebarCollapsed, setSidebarCollapsed } = useAppStore();
+  // Локальный стейт вместо useAppStore
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (

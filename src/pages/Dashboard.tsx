@@ -1,58 +1,57 @@
-import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
+  Activity,
+  FileUp,
   Globe,
   Package,
-  FileUp,
-  FileText,
-  Activity,
   ShoppingCart,
 } from "lucide-react";
-import { useAppStore } from "../store/useAppStore";
+import { useEffect, useState } from "react";
 
-import { sitesApi } from "../api/sites.api";
-import { productsApi } from "../api/products.api";
+import { importsApi, type ImportBatch } from "../api/imports.api"; // <-- Добавили импорт
+import { logsApi, type ActivityLog } from "../api/logs.api";
 import { ordersApi, type Order } from "../api/orders.api";
-import { logsApi, type ActivityLog } from "../api/logs.api"; // <-- Добавили импорт
+import { productsApi } from "../api/products.api";
+import { sitesApi } from "../api/sites.api";
 
 // UI Компоненты
+import { Badge } from "../components/ui/Badge";
+import { Card, CardContent } from "../components/ui/Card";
 import { KPICard } from "../components/ui/KPICard";
 import { StatusBadge } from "../components/ui/StatusBadge";
-import { Card, CardContent } from "../components/ui/Card";
 import {
   Table,
-  TableHeader,
   TableBody,
-  TableRow,
   TableCell,
+  TableHeader,
+  TableRow,
 } from "../components/ui/Table";
-import { Badge } from "../components/ui/Badge";
 import type { Site } from "../types";
 
 export function Dashboard() {
-  // Из стора берем то, для чего еще нет API (импорты, статьи)
-  const { imports, articles } = useAppStore();
-
   const [sites, setSites] = useState<Site[]>([]);
   const [totalProducts, setTotalProducts] = useState(0);
   const [orders, setOrders] = useState<Order[]>([]);
-  const [activityLogs, setActivityLogs] = useState<ActivityLog[]>([]); // <-- Локальный стейт для логов
+  const [imports, setImports] = useState<ImportBatch[]>([]); // <-- Стейт для импортов
+  const [activityLogs, setActivityLogs] = useState<ActivityLog[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [sitesRes, productsRes, ordersRes, logsRes] = await Promise.all([
+        const [sitesRes, productsRes, ordersRes, importsRes, logsRes] = await Promise.all([
           sitesApi.getAll({ limit: 100 }),
-          productsApi.getAll({ limit: 1 }), // Нам нужен только total
+          productsApi.getAll({ limit: 1 }),
           ordersApi.getAll(),
-          logsApi.getAll(), // <-- Добавили запрос логов
+          importsApi.getAll(), // <-- Добавили запрос импортов
+          logsApi.getAll(),
         ]);
 
         setSites(sitesRes.items);
         setTotalProducts(productsRes.total);
         setOrders(ordersRes);
-        setActivityLogs(logsRes); // <-- Сохранили логи в стейт
+        setImports(importsRes); // <-- Сохраняем импорты
+        setActivityLogs(logsRes);
       } catch (error) {
         console.error("Ошибка загрузки дашборда:", error);
       } finally {
@@ -79,13 +78,10 @@ export function Dashboard() {
     );
   }
 
+  // Счетчики для KPI
   const newOrdersCount = orders.filter((o) => o.status === "NEW").length;
-  const activeImportsCount = imports.filter(
-    (i) => i.status === "processing",
-  ).length;
-  const completedImportsCount = imports.filter(
-    (i) => i.status === "completed",
-  ).length;
+  const activeImportsCount = imports.filter((i) => i.status === "processing").length;
+  const completedImportsCount = imports.filter((i) => i.status === "completed").length;
 
   return (
     <motion.div
@@ -129,13 +125,6 @@ export function Dashboard() {
           trend="neutral"
           icon={<FileUp className="w-5 h-5" />}
         />
-        {/* <KPICard
-          title="Статьи"
-          value={articles.length}
-          change="Опубликовано"
-          trend="up"
-          icon={<FileText className="w-5 h-5" />}
-        /> */}
         <KPICard
           title="Новые заявки"
           value={newOrdersCount}
@@ -154,10 +143,15 @@ export function Dashboard() {
               <h2 className="text-base lg:text-lg font-semibold text-white">
                 Последние импорты
               </h2>
-              <StatusBadge status="live" size="sm" />
+              <StatusBadge status="synced" size="sm" />
             </div>
             <CardContent className="p-4 lg:p-6">
               <div className="space-y-3">
+                {imports.length === 0 && (
+                  <p className="text-gray-500 text-sm text-center py-4">
+                    Импорт еще не запускался
+                  </p>
+                )}
                 {imports.slice(0, 5).map((imp) => (
                   <motion.div
                     key={imp.id}
@@ -186,7 +180,7 @@ export function Dashboard() {
                       <StatusBadge
                         status={
                           imp.status === "completed"
-                            ? "live"
+                            ? "synced"
                             : imp.status === "processing"
                               ? "processing"
                               : "failed"
@@ -214,12 +208,6 @@ export function Dashboard() {
               </span>
             </div>
             <CardContent className="p-0">
-              {/* 
-        Контейнер со скроллом:
-        - max-h-[400px] (примерно 16rem) ограничивает высоту
-        - overflow-y-auto включает скролл при переполнении
-        - Кастомные стили для скроллбара
-      */}
               <div
                 className="relative max-h-[400px] overflow-y-auto pr-2
         [&::-webkit-scrollbar]:w-1.5
@@ -244,7 +232,7 @@ export function Dashboard() {
                         key={log.id}
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: index * 0.03 }} // Чуть быстрее, чтобы 50 элементов не анимировались вечность
+                        transition={{ delay: index * 0.03 }}
                         className="relative pl-8"
                       >
                         <div

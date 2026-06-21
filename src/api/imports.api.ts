@@ -34,7 +34,7 @@ export const importsApi = {
   async create(file: File, targetSiteIds: string[]): Promise<ImportBatch> {
     const formData = new FormData();
     formData.append("file", file);
-    formData.append("targetSiteIds", JSON.stringify(targetSiteIds));
+  formData.append("targetSiteIds", targetSiteIds.join(","));
     
     const { data } = await baseApi.post("/imports", formData, {
       headers: { "Content-Type": "multipart/form-data" },

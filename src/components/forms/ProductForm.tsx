@@ -10,7 +10,6 @@ import {
 import { useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import type { Product } from '../../api/products.api';
-import type { Site } from '../../api/sites.api';
 import type { Category } from '../../api/categories.api';
 import { Button } from '../ui/Button';
 import { ImageUploader } from '../ui/ImageUploader';
@@ -18,6 +17,7 @@ import { Input } from '../ui/Input';
 import { Select } from '../ui/Select';
 import { Textarea } from '../ui/Textarea';
 import { getImageUrl } from '../../lib/utils';
+import type { Site } from '../../types';
 
 export interface ProductFormData {
   name: string;

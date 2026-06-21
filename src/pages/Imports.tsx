@@ -40,26 +40,18 @@ export function Imports() {
     }
   };
 
-  const handleFileDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    const file = e.dataTransfer.files[0];
-    if (file && (file.name.endsWith('.xml') || file.name.endsWith('.json'))) {
-      setSelectedFile(file);
+  const handleFileSelected = async (file: File) => {
+    if (!file || !(file.name.endsWith('.xml') || file.name.endsWith('.json'))) {
+      if (file) alert('Поддерживаются только XML и JSON файлы');
+      return;
     }
-  };
 
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setSelectedFile(file);
-    }
-  };
-
-  const analyzeFile = async () => {
-    if (!selectedFile) return;
+    setSelectedFile(file);
+    setImportPreview(null);
     setIsUploading(true);
+
     try {
-      const result = await importsApi.analyze(selectedFile);
+      const result = await importsApi.analyze(file);
       setImportPreview({
         count: result.productsCount,
         categories: result.categories,
@@ -67,9 +59,22 @@ export function Imports() {
     } catch (error: any) {
       console.error('Analysis error:', error);
       alert(error.response?.data?.message || 'Ошибка анализа файла');
+      setSelectedFile(null);
+      setImportPreview(null);
     } finally {
       setIsUploading(false);
     }
+  };
+
+  const handleFileDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files[0];
+    if (file) handleFileSelected(file);
+  };
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) handleFileSelected(file);
   };
 
   const toggleSiteSelection = (siteId: string) => {
@@ -135,6 +140,7 @@ export function Imports() {
         <weight>2.5</weight>
         <length>100</length>
         <standard>ГОСТ</standard>
+        <count>15</count>
       </offer>
     </offers>
   </shop>
@@ -158,7 +164,8 @@ export function Imports() {
         "description": "Описание товара...",
         "weight": "2.5",
         "length": "100",
-        "standard": "ГОСТ"
+        "standard": "ГОСТ",
+        "count": 15
       }
     ]
   }
@@ -175,6 +182,7 @@ export function Imports() {
     { field: 'picture', description: 'URL изображения товара (должен начинаться с http/https)' },
     { field: 'description', description: 'Описание товара (используется как подзаголовок)' },
     { field: 'currencyId', description: 'Валюта цены (по умолчанию RUB)' },
+    { field: 'count', description: 'Количество товара на складе' },
     { field: 'weight', description: 'Вес товара' },
     { field: 'length', description: 'Длина товара' },
     { field: 'standard', description: 'Стандарт товара' },
@@ -182,7 +190,6 @@ export function Imports() {
 
   return (
     <div className="space-y-6">
-      {/* Page Header */}
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
           <h1 className="text-xl lg:text-2xl font-bold text-white">Импорты</h1>
@@ -193,7 +200,6 @@ export function Imports() {
         </Button>
       </div>
 
-      {/* Imports Table */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -257,7 +263,7 @@ export function Imports() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="hover:bg-red-500/10 hover:text-red-500"
+                        className="p-1.5 h-auto hover:bg-red-500/10 hover:text-red-500"
                         onClick={() => handleDelete(imp.id)}
                       >
                         <Trash2 className="w-4 h-4" />
@@ -271,7 +277,6 @@ export function Imports() {
         </Table>
       </motion.div>
 
-      {/* Import Wizard Modal */}
       <Modal
         isOpen={isModalOpen}
         onClose={resetForm}
@@ -279,7 +284,6 @@ export function Imports() {
         size="xl"
       >
         <div className="space-y-6">
-          {/* Progress Steps */}
           <div className="flex items-center gap-4">
             {[1, 2, 3].map(step => (
               <div key={step} className="flex items-center gap-2">
@@ -298,7 +302,6 @@ export function Imports() {
             ))}
           </div>
 
-          {/* Step 1: File Upload */}
           {currentStep === 1 && (
             <motion.div
               initial={{ opacity: 0, x: 20 }}
@@ -329,34 +332,25 @@ export function Imports() {
                           <motion.div
                             initial={{ width: 0 }}
                             animate={{ width: '100%' }}
-                            transition={{ duration: 2 }}
+                            transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
                             className="h-full bg-accent"
                           />
                         </div>
                         <p className="text-accent text-sm">Анализ файла...</p>
                       </div>
                     ) : importPreview ? (
-                      <div className="flex items-center gap-2 text-green-500">
+                      <div className="flex items-center gap-2 text-green-500 justify-center">
                         <CheckCircle className="w-4 h-4" />
                         <span>Готов к импорту</span>
                       </div>
-                    ) : (
-                      <button
-                        onClick={analyzeFile}
-                        className="px-4 py-2 bg-accent hover:bg-accent-hover text-white rounded-lg transition-colors"
-                      >
-                        Анализировать файл
-                      </button>
-                    )}
-                    <button
-                      onClick={() => {
-                        setSelectedFile(null);
-                        setImportPreview(null);
-                      }}
-                      className="text-gray-400 hover:text-white text-sm underline"
+                    ) : null}
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      onClick={() => { setSelectedFile(null); setImportPreview(null); }}
                     >
                       Выбрать другой файл
-                    </button>
+                    </Button>
                   </div>
                 ) : (
                   <div className="space-y-4">
@@ -365,8 +359,15 @@ export function Imports() {
                       <p className="text-white font-medium">Перетащите файл сюда или нажмите для выбора</p>
                       <p className="text-gray-400 text-sm mt-1">Поддерживаются форматы XML и JSON (YML)</p>
                     </div>
-                    <label className="inline-block px-4 py-2 bg-background-dark border border-white/10 rounded-lg text-white hover:bg-white/5 transition-colors cursor-pointer">
-                      Выбрать файл
+                    <label className="cursor-pointer inline-block">
+                      <Button 
+                        variant="outline" 
+                        leftIcon={<Upload className="w-4 h-4" />} 
+                        type="button"
+                        className="bg-background-dark border border-white/10 text-white hover:bg-white/5"
+                      >
+                        Выбрать файл
+                      </Button>
                       <input
                         type="file"
                         accept=".xml,.json"
@@ -378,18 +379,15 @@ export function Imports() {
                 )}
               </div>
 
-              {/* Format Info Button */}
-              <button
+              <Button
+                variant="ghost"
+                className="w-full justify-center bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/20 text-blue-400 hover:text-blue-300"
+                leftIcon={<Info className="w-4 h-4" />}
                 onClick={() => setShowFormatInfo(!showFormatInfo)}
-                className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/20 rounded-lg text-blue-400 transition-colors"
               >
-                <Info className="w-4 h-4" />
-                <span className="text-sm font-medium">
-                  {showFormatInfo ? 'Скрыть' : 'Показать'} требования к формату файла
-                </span>
-              </button>
+                {showFormatInfo ? 'Скрыть' : 'Показать'} требования к формату файла
+              </Button>
 
-              {/* Format Information */}
               <AnimatePresence>
                 {showFormatInfo && (
                   <motion.div
@@ -399,9 +397,10 @@ export function Imports() {
                     className="overflow-hidden"
                   >
                     <div className="glass rounded-lg p-6 space-y-6">
-                      {/* Format Tabs */}
                       <div className="flex gap-2 border-b border-white/10 pb-2">
-                        <button
+                        <Button
+                          variant="ghost"
+                          size="sm"
                           onClick={() => setActiveFormatTab('xml')}
                           className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                             activeFormatTab === 'xml'
@@ -410,8 +409,10 @@ export function Imports() {
                           }`}
                         >
                           XML формат
-                        </button>
-                        <button
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
                           onClick={() => setActiveFormatTab('json')}
                           className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                             activeFormatTab === 'json'
@@ -420,10 +421,9 @@ export function Imports() {
                           }`}
                         >
                           JSON формат
-                        </button>
+                        </Button>
                       </div>
 
-                      {/* Example Code */}
                       <div className="space-y-3">
                         <div className="flex items-center gap-2">
                           <Code className="w-4 h-4 text-gray-400" />
@@ -436,7 +436,6 @@ export function Imports() {
                         </div>
                       </div>
 
-                      {/* Required Fields */}
                       <div className="space-y-3">
                         <p className="text-sm font-medium text-white flex items-center gap-2">
                           <span className="w-2 h-2 bg-red-500 rounded-full"></span>
@@ -454,7 +453,6 @@ export function Imports() {
                         </div>
                       </div>
 
-                      {/* Optional Fields */}
                       <div className="space-y-3">
                         <p className="text-sm font-medium text-white flex items-center gap-2">
                           <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
@@ -472,7 +470,6 @@ export function Imports() {
                         </div>
                       </div>
 
-                      {/* Important Notes */}
                       <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-4">
                         <div className="flex items-start gap-3">
                           <AlertCircle className="w-5 h-5 text-yellow-500 shrink-0 mt-0.5" />
@@ -517,7 +514,6 @@ export function Imports() {
             </motion.div>
           )}
 
-          {/* Step 2: Select Sites */}
           {currentStep === 2 && (
             <motion.div
               initial={{ opacity: 0, x: 20 }}
@@ -551,7 +547,6 @@ export function Imports() {
             </motion.div>
           )}
 
-          {/* Step 3: Preview & Confirm */}
           {currentStep === 3 && (
             <motion.div
               initial={{ opacity: 0, x: 20 }}
@@ -597,40 +592,36 @@ export function Imports() {
             </motion.div>
           )}
 
-          {/* Navigation Buttons */}
           <div className="flex items-center justify-between pt-4 border-t border-white/10">
             {currentStep > 1 ? (
-              <button
+              <Button 
+                variant="ghost" 
+                className="bg-background-dark border border-white/10 text-white hover:bg-white/5" 
                 onClick={() => setCurrentStep(s => s - 1)}
-                className="px-4 py-2 bg-background-dark border border-white/10 rounded-lg text-white hover:bg-white/5 transition-colors"
               >
                 Назад
-              </button>
+              </Button>
             ) : (
-              <button
-                onClick={resetForm}
-                className="px-4 py-2 bg-background-dark border border-white/10 rounded-lg text-white hover:bg-white/5 transition-colors"
-              >
+              <Button variant="ghost" onClick={resetForm}>
                 Отмена
-              </button>
+              </Button>
             )}
             
             {currentStep < 3 ? (
-              <button
+              <Button
                 onClick={() => setCurrentStep(s => s + 1)}
                 disabled={(!canProceedToStep2 && currentStep === 1) || (!canProceedToStep3 && currentStep === 2)}
-                className="px-4 py-2 bg-accent hover:bg-accent-hover text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Продолжить
-              </button>
+              </Button>
             ) : (
-              <button
+              <Button
                 onClick={handleStartImport}
                 disabled={isUploading}
-                className="px-6 py-2 bg-accent hover:bg-accent-hover text-white rounded-lg transition-colors glow-red-hover disabled:opacity-50"
+                className="glow-red-hover"
               >
                 {isUploading ? 'Запуск...' : 'Начать импорт'}
-              </button>
+              </Button>
             )}
           </div>
         </div>

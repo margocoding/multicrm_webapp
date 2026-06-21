@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
-import { Modal } from '../ui/Modal';
-import { Loading } from '../ui/Loading';
+import type { Category } from '../../api/categories.api';
 import type { Product, ProductDetails } from '../../api/products.api';
 import { productsApi } from '../../api/products.api';
-import type { Site } from '../../api/sites.api';
-import type { Category } from '../../api/categories.api';
 import { ProductForm, type ProductFormData } from '../forms/ProductForm';
+import { Loading } from '../ui/Loading';
+import { Modal } from '../ui/Modal';
+import type { Site } from '../../types';
 
 interface ProductModalProps {
   isOpen: boolean;

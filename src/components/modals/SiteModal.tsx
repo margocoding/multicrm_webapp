@@ -1,7 +1,7 @@
 import { Modal } from '../ui/Modal';
 import { Loading } from '../ui/Loading';
-import type { Site } from '../../api/sites.api';
 import { SiteForm, type SiteFormData } from '../forms/SiteForm';
+import type { Site } from '../../types';
 
 interface SiteModalProps {
   isOpen: boolean;
