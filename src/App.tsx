@@ -1,25 +1,24 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { AnimatePresence } from 'framer-motion';
-import { Sidebar } from './components/Sidebar';
-import { Topbar } from './components/Topbar';
-import { Dashboard } from './pages/Dashboard';
-import { Sites } from './pages/Sites';
-import { Products } from './pages/Products';
-import { Imports } from './pages/Imports';
-import { Articles } from './pages/Articles';
-import { Settings } from './pages/Settings';
+import { AnimatePresence } from "framer-motion";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import { Sidebar } from "./components/Sidebar";
+import { Topbar } from "./components/Topbar";
+import { Dashboard } from "./pages/Dashboard";
+import { Imports } from "./pages/Imports";
+import { Orders } from "./pages/Orders";
+import { Products } from "./pages/Products";
+import { Settings } from "./pages/Settings";
+import { Sites } from "./pages/Sites";
 
 function App() {
   return (
     <BrowserRouter>
       <div className="min-h-screen bg-[#0B1120] bg-grid-pattern">
-        {/* Background gradient overlay */}
-        <div className="fixed inset-0 bg-gradient-to-br from-[#0B1120] via-[#0B1120]/95 to-[#111827] pointer-events-none"></div>
-        
-        {/* Main content wrapper */}
+        <div className="fixed inset-0 bg-linear-to-br from-[#0B1120] via-[#0B1120]/95 to-[#111827] pointer-events-none"></div>
+        <ToastContainer toastClassName="app-toast" autoClose={2500} theme="dark"/>
         <div className="relative z-10">
           <Sidebar />
-          <div className="transition-all duration-300 lg:ml-[260px] ml-0">
+          <div className="transition-all duration-300 lg:ml-65 ml-0">
             <Topbar />
             <main className="p-4 lg:p-6 min-h-[calc(100vh-4rem)] pt-20 lg:pt-0">
               <AnimatePresence mode="wait">
@@ -28,8 +27,9 @@ function App() {
                   <Route path="/sites" element={<Sites />} />
                   <Route path="/products" element={<Products />} />
                   <Route path="/imports" element={<Imports />} />
-                  <Route path="/articles" element={<Articles />} />
+                  {/* <Route path="/articles" element={<Articles />} /> */}
                   <Route path="/settings" element={<Settings />} />
+                  <Route path="/orders" element={<Orders />} />
                 </Routes>
               </AnimatePresence>
             </main>
