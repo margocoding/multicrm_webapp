@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Trash2, Upload, File, CheckCircle, AlertCircle, Globe, Info, Code } from 'lucide-react';
 import { importsApi, type ImportBatch } from '../api/imports.api';
@@ -20,6 +20,7 @@ export function Imports() {
   const [importPreview, setImportPreview] = useState<{ count: number; categories: string[] } | null>(null);
   const [showFormatInfo, setShowFormatInfo] = useState(false);
   const [activeFormatTab, setActiveFormatTab] = useState<'xml' | 'json'>('xml');
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     loadData();
@@ -75,6 +76,10 @@ export function Imports() {
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) handleFileSelected(file);
+    // Сбрасываем value, чтобы можно было выбрать тот же файл повторно
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
   };
 
   const toggleSiteSelection = (siteId: string) => {
@@ -359,22 +364,22 @@ export function Imports() {
                       <p className="text-white font-medium">Перетащите файл сюда или нажмите для выбора</p>
                       <p className="text-gray-400 text-sm mt-1">Поддерживаются форматы XML и JSON (YML)</p>
                     </div>
-                    <label className="cursor-pointer inline-block">
-                      <Button 
-                        variant="outline" 
-                        leftIcon={<Upload className="w-4 h-4" />} 
-                        type="button"
-                        className="bg-background-dark border border-white/10 text-white hover:bg-white/5"
-                      >
-                        Выбрать файл
-                      </Button>
-                      <input
-                        type="file"
-                        accept=".xml,.json"
-                        onChange={handleFileSelect}
-                        className="hidden"
-                      />
-                    </label>
+                    <Button 
+                      variant="outline" 
+                      leftIcon={<Upload className="w-4 h-4" />} 
+                      type="button"
+                      className="bg-background-dark border border-white/10 text-white hover:bg-white/5"
+                      onClick={() => fileInputRef.current?.click()}
+                    >
+                      Выбрать файл
+                    </Button>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept=".xml,.json"
+                      onChange={handleFileSelect}
+                      className="hidden"
+                    />
                   </div>
                 )}
               </div>
