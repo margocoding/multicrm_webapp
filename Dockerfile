@@ -1,6 +1,9 @@
-FROM node AS builder
+FROM node:20-alpine AS builder
 
 WORKDIR /app
+
+ARG VITE_API_URL
+ENV VITE_API_URL=$VITE_API_URL
 
 COPY package*.json ./
 RUN npm ci
@@ -8,12 +11,15 @@ RUN npm ci
 COPY . .
 RUN npm run build
 
-FROM nginx:alpine
+FROM node:20-alpine
 
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+WORKDIR /app
 
-COPY --from=builder /app/dist /usr/share/nginx/html
+RUN npm install -g serve
 
-EXPOSE 80
+COPY --from=builder /app/dist ./dist
 
-CMD ["nginx", "-g", "daemon off;"]
+EXPOSE 3000
+
+
+CMD ["serve", "-s", "dist", "-l", "3000"]
