@@ -231,7 +231,7 @@ export function Products() {
 
       <div className="glass rounded-xl border border-white/5 p-4">
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 flex-wrap">
-          <div className="relative w-full sm:flex-1 min-w-[200px] max-w-md">
+          <div className="relative w-full sm:flex-1 min-w-50 max-w-md">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
             <input
               type="text"
@@ -302,7 +302,7 @@ export function Products() {
                         >
                           <TableCell>
                             <div className="flex items-center gap-3">
-                              <div className="w-10 h-10 rounded-lg overflow-hidden bg-background-dark flex-shrink-0">
+                              <div className="w-10 h-10 rounded-lg overflow-hidden bg-background-dark shrink-0">
                                 <img
                                   src={getImageUrl(product.image)}
                                   alt={product.name}
@@ -313,7 +313,7 @@ export function Products() {
                                 <p className="text-white font-medium text-sm lg:text-base truncate">
                                   {product.name}
                                 </p>
-                                <p className="text-gray-500 text-xs truncate max-w-[150px] lg:max-w-[220px]">
+                                <p className="text-gray-500 text-xs truncate max-w-37.5 lg:max-w-55">
                                   {product.subtitle ||
                                     [product.standard, product.length, product.weight]
                                       .filter(Boolean)

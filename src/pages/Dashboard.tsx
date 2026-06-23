@@ -209,7 +209,7 @@ export function Dashboard() {
             </div>
             <CardContent className="p-0">
               <div
-                className="relative max-h-[400px] overflow-y-auto pr-2
+                className="relative max-h-100 overflow-y-auto pr-2
         [&::-webkit-scrollbar]:w-1.5
         [&::-webkit-scrollbar-track]:bg-transparent
         [&::-webkit-scrollbar-thumb]:bg-white/10

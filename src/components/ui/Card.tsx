@@ -11,15 +11,15 @@ export function Card({ children, className, hover = false, glow = false }: CardP
   return (
     <div
       className={cn(
-        'relative bg-white/[0.03] border border-white/10 rounded-xl backdrop-blur-sm',
+        'relative bg-white/3 border border-white/10 rounded-xl backdrop-blur-sm',
         'transition-all duration-300',
-        hover && 'hover:bg-white/[0.05] hover:border-white/20 hover:shadow-lg hover:shadow-black/20 cursor-pointer',
+        hover && 'hover:bg-white/5 hover:border-white/20 hover:shadow-lg hover:shadow-black/20 cursor-pointer',
         glow && 'shadow-[0_0_30px_rgba(220,38,38,0.1)] hover:shadow-[0_0_40px_rgba(220,38,38,0.15)]',
         className
       )}
     >
       {glow && (
-        <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-red-500/[0.03] to-transparent pointer-events-none" />
+        <div className="absolute inset-0 rounded-xl bg-linear-to-br from-red-500/3 to-transparent pointer-events-none" />
       )}
       {children}
     </div>
@@ -59,7 +59,7 @@ export interface CardFooterProps {
 
 export function CardFooter({ children, className }: CardFooterProps) {
   return (
-    <div className={cn('px-6 py-4 border-t border-white/10 bg-white/[0.02]', className)}>
+    <div className={cn('px-6 py-4 border-t border-white/10 bg-white/2', className)}>
       {children}
     </div>
   );
