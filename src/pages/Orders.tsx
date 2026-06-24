@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { motion } from "framer-motion";
 import {
   CheckCircle2,
   ChevronDown,
@@ -8,49 +8,47 @@ import {
   Mail,
   MessageSquare,
   Package,
-  Ruler,
-  Scale,
   Tag,
   Trash2,
-  XCircle,
-} from 'lucide-react';
-import { Fragment, useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
-import type { Order } from '../api/orders.api';
-import { ordersApi } from '../api/orders.api';
-import { Button } from '../components/ui/Button';
-import { Loading } from '../components/ui/Loading';
-import { Select } from '../components/ui/Select';
+  XCircle
+} from "lucide-react";
+import { Fragment, useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import type { Order } from "../api/orders.api";
+import { ordersApi } from "../api/orders.api";
+import { Button } from "../components/ui/Button";
+import { Loading } from "../components/ui/Loading";
+import { Select } from "../components/ui/Select";
 import {
   Table,
   TableBody,
   TableCell,
   TableHeader,
   TableRow,
-} from '../components/ui/Table';
-import { getImageUrl } from '../lib/utils';
+} from "../components/ui/Table";
+import { getImageUrl } from "../lib/utils";
 
 const STATUS_OPTIONS = [
-  { value: 'NEW', label: 'Новый' },
-  { value: 'PROCESSED', label: 'Обработан' },
-  { value: 'CANCELLED', label: 'Отменён' },
+  { value: "NEW", label: "Новый" },
+  { value: "PROCESSED", label: "Обработан" },
+  { value: "CANCELLED", label: "Отменён" },
 ];
 
 const STATUS_CONFIG = {
   NEW: {
-    label: 'Новый',
+    label: "Новый",
     icon: Clock,
-    classes: 'bg-blue-500/10 text-blue-400',
+    classes: "bg-blue-500/10 text-blue-400",
   },
   PROCESSED: {
-    label: 'Обработан',
+    label: "Обработан",
     icon: CheckCircle2,
-    classes: 'bg-green-500/10 text-green-400',
+    classes: "bg-green-500/10 text-green-400",
   },
   CANCELLED: {
-    label: 'Отменён',
+    label: "Отменён",
     icon: XCircle,
-    classes: 'bg-red-500/10 text-red-400',
+    classes: "bg-red-500/10 text-red-400",
   },
 };
 
@@ -69,7 +67,7 @@ export function Orders() {
       const data = await ordersApi.getAll();
       setOrders(data);
     } catch (error) {
-      toast.error('Не удалось загрузить заказы');
+      toast.error("Не удалось загрузить заказы");
     } finally {
       setIsLoading(false);
     }
@@ -94,7 +92,7 @@ export function Orders() {
       const details = await ordersApi.getById(id);
       setDetailsCache((prev) => ({ ...prev, [id]: details }));
     } catch (error) {
-      toast.error('Не удалось загрузить детали заказа');
+      toast.error("Не удалось загрузить детали заказа");
       setExpandedId(null);
     } finally {
       setLoadingDetails(null);
@@ -106,23 +104,23 @@ export function Orders() {
     try {
       await ordersApi.updateStatus(
         id,
-        status as 'NEW' | 'PROCESSED' | 'CANCELLED',
+        status as "NEW" | "PROCESSED" | "CANCELLED",
       );
-      toast.success('Статус заказа обновлён');
+      toast.success("Статус заказа обновлён");
       loadOrders();
     } catch (error: any) {
       const msg = error?.response?.data?.message;
-      toast.error(Array.isArray(msg) ? msg[0] : msg || 'Ошибка обновления');
+      toast.error(Array.isArray(msg) ? msg[0] : msg || "Ошибка обновления");
     } finally {
       setUpdatingId(null);
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (!window.confirm('Удалить заказ? Это действие необратимо.')) return;
+    if (!window.confirm("Удалить заказ? Это действие необратимо.")) return;
     try {
       await ordersApi.remove(id);
-      toast.success('Заказ удалён');
+      toast.success("Заказ удалён");
       if (expandedId === id) setExpandedId(null);
       setDetailsCache((prev) => {
         const next = { ...prev };
@@ -131,23 +129,23 @@ export function Orders() {
       });
       loadOrders();
     } catch (error) {
-      toast.error('Не удалось удалить заказ');
+      toast.error("Не удалось удалить заказ");
     }
   };
 
   const formatDate = (iso: string) => {
     const d = new Date(iso);
-    return d.toLocaleString('ru-RU', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
+    return d.toLocaleString("ru-RU", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   };
 
   const formatPrice = (price: string, currency: string) => {
-    const symbol = currency === 'RUB' ? '₽' : currency;
+    const symbol = currency === "RUB" ? "₽" : currency;
     return `${price} ${symbol}`;
   };
 
@@ -166,12 +164,17 @@ export function Orders() {
         className="glass rounded-xl border border-white/5 relative overflow-hidden"
       >
         {isLoading ? (
-          <Loading variant="overlay" size="lg" text="Загрузка заявок..." fullHeight />
+          <Loading
+            variant="overlay"
+            size="lg"
+            text="Загрузка заявок..."
+            fullHeight
+          />
         ) : (
           <Table>
             <TableHeader>
               <TableRow>
-                <TableCell variant="header" className="w-8"/>
+                <TableCell variant="header" className="w-8" />
                 <TableCell variant="header">Заявка</TableCell>
                 <TableCell variant="header" className="hidden md:table-cell">
                   Клиент
@@ -213,7 +216,7 @@ export function Orders() {
                     <Fragment key={order.id}>
                       <TableRow
                         onClick={() => handleToggleDetails(order.id)}
-                        className={isExpanded ? 'bg-white/3' : ''}
+                        className={isExpanded ? "bg-white/3" : ""}
                       >
                         <TableCell className="w-8">
                           <motion.div
@@ -232,7 +235,9 @@ export function Orders() {
                             {order.comment && (
                               <div className="flex items-center gap-1 mt-1 text-gray-500 text-xs max-w-50">
                                 <MessageSquare className="w-3 h-3 shrink-0" />
-                                <span className="truncate">{order.comment}</span>
+                                <span className="truncate">
+                                  {order.comment}
+                                </span>
                               </div>
                             )}
                           </div>
@@ -251,16 +256,16 @@ export function Orders() {
                           <div className="flex items-center gap-2">
                             <Package className="w-4 h-4 text-gray-400" />
                             <span className="text-sm text-gray-300">
-                              {order.items.length}{' '}
+                              {order.items.length}{" "}
                               {order.items.length === 1
-                                ? 'позиция'
+                                ? "позиция"
                                 : order.items.length < 5
-                                ? 'позиции'
-                                : 'позиций'}
+                                  ? "позиции"
+                                  : "позиций"}
                             </span>
                           </div>
                           <div className="text-xs text-gray-500 mt-1 max-w-50 truncate">
-                            {order.items.map((i) => i.name).join(', ')}
+                            {order.items.map((i) => i.name).join(", ")}
                           </div>
                         </TableCell>
 
@@ -298,7 +303,7 @@ export function Orders() {
                               }
                               disabled={
                                 updatingId === order.id ||
-                                order.status === 'CANCELLED'
+                                order.status === "CANCELLED"
                               }
                             />
                             <Button
@@ -320,9 +325,9 @@ export function Orders() {
                           <TableCell colSpan={8} className="p-0">
                             <motion.div
                               initial={{ height: 0, opacity: 0 }}
-                              animate={{ height: 'auto', opacity: 1 }}
+                              animate={{ height: "auto", opacity: 1 }}
                               exit={{ height: 0, opacity: 0 }}
-                              transition={{ duration: 0.25, ease: 'easeInOut' }}
+                              transition={{ duration: 0.25, ease: "easeInOut" }}
                               className="overflow-hidden"
                             >
                               <div className="p-6">
@@ -341,7 +346,7 @@ export function Orders() {
                                         Состав заказа
                                       </h3>
                                       <p className="text-xs text-gray-500">
-                                        Всего:{' '}
+                                        Всего:{" "}
                                         <span className="text-white font-medium">
                                           {formatPrice(
                                             details.totalPrice,
@@ -352,79 +357,94 @@ export function Orders() {
                                     </div>
 
                                     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                                      {details.items.map((item) => (
-                                        <div
-                                          key={item.id}
-                                          className="glass rounded-lg border border-white/10 p-4 flex gap-4 hover:border-white/20 transition-colors"
-                                        >
-                                          <div className="w-20 h-20 rounded-lg overflow-hidden bg-background-dark border border-white/10 shrink-0">
-                                            {item.image ? (
-                                              <img
-                                                src={getImageUrl(item.image)}
-                                                alt={item.name}
-                                                className="w-full h-full object-cover"
-                                              />
-                                            ) : (
-                                              <div className="w-full h-full flex items-center justify-center text-gray-600">
-                                                <ImageIcon className="w-6 h-6" />
-                                              </div>
-                                            )}
-                                          </div>
+                                      {details.items.map((item) => {
+                                        const chars =
+                                          (item as any).characteristics ?? [];
 
-                                          <div className="flex-1 min-w-0">
-                                            <p className="text-white font-medium text-sm truncate">
-                                              {item.name}
-                                            </p>
-                                            {item.subtitle && (
-                                              <p className="text-red-500/70 text-[10px] tracking-widest mt-0.5 uppercase">
-                                                {item.subtitle}
+                                        return (
+                                          <div
+                                            key={item.id}
+                                            className="glass rounded-lg border border-white/10 p-4 flex gap-4 hover:border-white/20 transition-colors"
+                                          >
+                                            <div className="w-20 h-20 rounded-lg overflow-hidden bg-background-dark border border-white/10 shrink-0">
+                                              {item.image ? (
+                                                <img
+                                                  src={getImageUrl(item.image)}
+                                                  alt={item.name}
+                                                  className="w-full h-full object-cover"
+                                                />
+                                              ) : (
+                                                <div className="w-full h-full flex items-center justify-center text-gray-600">
+                                                  <ImageIcon className="w-6 h-6" />
+                                                </div>
+                                              )}
+                                            </div>
+
+                                            <div className="flex-1 min-w-0">
+                                              <p className="text-white font-medium text-sm truncate">
+                                                {item.name}
                                               </p>
-                                            )}
+                                              {item.subtitle && (
+                                                <p className="text-red-500/70 text-[10px] tracking-widest mt-0.5 uppercase">
+                                                  {item.subtitle}
+                                                </p>
+                                              )}
 
-                                            <div className="mt-2 space-y-1">
-                                              {item.standard && (
-                                                <div className="flex items-center gap-1.5 text-[11px] text-gray-400">
-                                                  <Tag className="w-3 h-3 shrink-0" />
-                                                  <span className="truncate">
-                                                    {item.standard}
-                                                  </span>
-                                                </div>
-                                              )}
-                                              {item.length && (
-                                                <div className="flex items-center gap-1.5 text-[11px] text-gray-400">
-                                                  <Ruler className="w-3 h-3 shrink-0" />
-                                                  <span>{item.length}</span>
-                                                </div>
-                                              )}
-                                              {item.weight && (
-                                                <div className="flex items-center gap-1.5 text-[11px] text-gray-400">
-                                                  <Scale className="w-3 h-3 shrink-0" />
-                                                  <span>{item.weight}</span>
-                                                </div>
-                                              )}
-                                            </div>
+                                              <div className="mt-2 space-y-1">
+                                                {chars.length > 0 ? (
+                                                  chars.map(
+                                                    (
+                                                      char: any,
+                                                      idx: number,
+                                                    ) => (
+                                                      <div
+                                                        key={char.id ?? idx}
+                                                        className="flex items-center gap-1.5 text-[11px] text-gray-400"
+                                                      >
+                                                        <Tag className="w-3 h-3 shrink-0 text-gray-500" />
+                                                        <span className="truncate">
+                                                          <span className="text-gray-500">
+                                                            {char.title}:
+                                                          </span>{" "}
+                                                          <span className="text-gray-300">
+                                                            {char.value}
+                                                          </span>
+                                                        </span>
+                                                      </div>
+                                                    ),
+                                                  )
+                                                ) : (
+                                                  <p className="text-[11px] text-gray-600 italic">
+                                                    Характеристики не указаны
+                                                  </p>
+                                                )}
+                                              </div>
 
-                                            <div className="flex items-center justify-between mt-3 pt-3 border-t border-white/5">
-                                              <span className="text-xs text-gray-400">
-                                                {item.quantity} шт ×{' '}
-                                                {item.price}{' '}
-                                                {details.currency === 'RUB'
-                                                  ? '₽'
-                                                  : details.currency}
-                                              </span>
-                                              <span className="text-white font-semibold text-sm">
-                                                {(
-                                                  parseFloat(item.price) *
-                                                  item.quantity
-                                                ).toLocaleString('ru-RU')}{' '}
-                                                {details.currency === 'RUB'
-                                                  ? '₽'
-                                                  : details.currency}
-                                              </span>
+                                              <div className="flex items-center justify-between mt-3 pt-3 border-t border-white/5">
+                                                <span className="text-xs text-gray-400">
+                                                  {item.quantity}{" "}
+                                                  {(item as any).unit || "шт"} ×{" "}
+                                                  {item.price}{" "}
+                                                  {details.currency === "RUB"
+                                                    ? "₽"
+                                                    : details.currency}
+                                                </span>
+                                                <span className="text-white font-semibold text-sm">
+                                                  {(
+                                                    parseFloat(item.price) *
+                                                    item.quantity
+                                                  ).toLocaleString(
+                                                    "ru-RU",
+                                                  )}{" "}
+                                                  {details.currency === "RUB"
+                                                    ? "₽"
+                                                    : details.currency}
+                                                </span>
+                                              </div>
                                             </div>
                                           </div>
-                                        </div>
-                                      ))}
+                                        );
+                                      })}
                                     </div>
                                   </div>
                                 )}

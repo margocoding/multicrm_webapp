@@ -41,17 +41,17 @@ export function ProductModal({
     : 'Сохранить изменения';
 
   useEffect(() => {
-    if (isOpen && mode === 'edit' && product?.id) {
+    if (isOpen && mode === 'edit' && product?.slug) {
       setIsLoadingDetails(true);
       productsApi
-        .getById(product.id)
+        .getBySlug(product.slug)
         .then(setDetailedProduct)
         .catch(console.error)
         .finally(() => setIsLoadingDetails(false));
     } else if (!isOpen) {
       setDetailedProduct(null);
     }
-  }, [isOpen, mode, product?.id]);
+  }, [isOpen, mode, product?.slug]);
 
   const initialValues =
     mode === 'edit' && detailedProduct

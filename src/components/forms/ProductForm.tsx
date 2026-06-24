@@ -1,36 +1,37 @@
 import {
   Package,
   RussianRubleIcon,
-  Ruler,
-  Scale,
-  Tag,
   FolderTree,
   Box,
-} from 'lucide-react';
-import { useEffect, useState } from 'react';
-import { useForm, Controller } from 'react-hook-form';
-import type { Product } from '../../api/products.api';
-import type { Category } from '../../api/categories.api';
-import { Button } from '../ui/Button';
-import { ImageUploader } from '../ui/ImageUploader';
-import { Input } from '../ui/Input';
-import { Select } from '../ui/Select';
-import { Textarea } from '../ui/Textarea';
-import { getImageUrl } from '../../lib/utils';
-import type { Site } from '../../types';
+  Plus,
+  Trash2,
+  Gauge,
+  Wrench,
+} from "lucide-react";
+import { useEffect, useState } from "react";
+import { useForm, Controller, useFieldArray } from "react-hook-form";
+import type { Product, Characteristic, ProductCondition } from "../../api/products.api";
+import type { Category } from "../../api/categories.api";
+import { Button } from "../ui/Button";
+import { ImageUploader } from "../ui/ImageUploader";
+import { Input } from "../ui/Input";
+import { Select } from "../ui/Select";
+import { Textarea } from "../ui/Textarea";
+import { getImageUrl } from "../../lib/utils";
+import type { Site } from "../../types";
 
 export interface ProductFormData {
   name: string;
   subtitle?: string;
-  standard?: string;
-  length?: string;
-  weight?: string;
   price: string;
   priceUnit: string;
   quantity: number;
+  unit: string;
+  condition: ProductCondition;
   categoryId?: string | null;
   siteIds?: string[];
   image?: File | null;
+  characteristics: Characteristic[];
 }
 
 interface ProductFormProps {
@@ -44,9 +45,16 @@ interface ProductFormProps {
 }
 
 const PRICE_UNIT_OPTIONS = [
-  { value: 'RUB', label: '₽ RUB' },
-  { value: 'USD', label: '$ USD' },
-  { value: 'EUR', label: '€ EUR' },
+  { value: "RUB", label: "₽ RUB" },
+  { value: "USD", label: "$ USD" },
+  { value: "EUR", label: "€ EUR" },
+];
+
+const CONDITION_OPTIONS = [
+  { value: "NEW", label: "Новый" },
+  { value: "USED", label: "Б/У" },
+  { value: "REFURBISHED", label: "Восстановленный" },
+  { value: "RESERVED", label: "Резерв" },
 ];
 
 export function ProductForm({
@@ -60,18 +68,23 @@ export function ProductForm({
 }: ProductFormProps) {
   const { control, handleSubmit, reset, setValue } = useForm<ProductFormData>({
     defaultValues: {
-      name: '',
-      subtitle: '',
-      standard: '',
-      length: '',
-      weight: '',
-      price: '',
-      priceUnit: 'RUB',
+      name: "",
+      subtitle: "",
+      price: "",
+      priceUnit: "RUB",
       quantity: 0,
+      unit: "шт",
+      condition: "NEW",
       categoryId: null,
       siteIds: [],
       image: null,
+      characteristics: [],
     },
+  });
+
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "characteristics",
   });
 
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -82,32 +95,32 @@ export function ProductForm({
   useEffect(() => {
     if (initialValues) {
       reset({
-        name: initialValues.name || '',
-        subtitle: initialValues.subtitle || '',
-        standard: initialValues.standard || '',
-        length: initialValues.length || '',
-        weight: initialValues.weight || '',
-        price: initialValues.price || '',
-        priceUnit: initialValues.priceUnit || 'RUB',
+        name: initialValues.name || "",
+        subtitle: initialValues.subtitle || "",
+        price: initialValues.price || "",
+        priceUnit: initialValues.priceUnit || "RUB",
         quantity: initialValues.quantity ?? 0,
+        unit: initialValues.unit || "шт",
+        condition: initialValues.condition || "NEW",
         categoryId: initialValues.categoryId || null,
         siteIds: (initialValues.siteIds as string[]) || [],
         image: null,
+        characteristics: initialValues.characteristics || [],
       });
       setImagePreview(getImageUrl(initialValues.image as string) || null);
     } else {
       reset({
-        name: '',
-        subtitle: '',
-        standard: '',
-        length: '',
-        weight: '',
-        price: '',
-        priceUnit: 'RUB',
+        name: "",
+        subtitle: "",
+        price: "",
+        priceUnit: "RUB",
         quantity: 0,
+        unit: "шт",
+        condition: "NEW",
         categoryId: null,
         siteIds: [],
         image: null,
+        characteristics: [],
       });
       setImagePreview(null);
     }
@@ -116,13 +129,13 @@ export function ProductForm({
 
   const handleImageChange = (file: File | null) => {
     setImageFile(file);
-    setValue('image', file);
+    setValue("image", file);
   };
 
   const siteOptions = sites.map((s) => ({ value: s.id, label: s.name }));
 
   const categoryOptions = [
-    { value: '__none__', label: '— Без категории —' },
+    { value: "__none__", label: "— Без категории —" },
     ...categories.flatMap((cat) => [
       { value: cat.id, label: cat.name },
       ...(cat.children || []).map((child) => ({
@@ -131,6 +144,10 @@ export function ProductForm({
       })),
     ]),
   ];
+
+  const handleAddCharacteristic = () => {
+    append({ title: "", value: "" });
+  };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
@@ -144,7 +161,7 @@ export function ProductForm({
       <Controller
         name="name"
         control={control}
-        rules={{ required: 'Название обязательно' }}
+        rules={{ required: "Название обязательно" }}
         render={({ field }) => (
           <Input
             label="Название товара"
@@ -178,8 +195,8 @@ export function ProductForm({
           <Select
             label="Категория"
             options={categoryOptions}
-            value={field.value ?? '__none__'}
-            onChange={(v) => field.onChange(v === '__none__' ? null : v)}
+            value={field.value ?? "__none__"}
+            onChange={(v) => field.onChange(v === "__none__" ? null : v)}
             placeholder="Выберите категорию"
             leftIcon={<FolderTree className="w-4 h-4" />}
             disabled={disabled}
@@ -189,54 +206,9 @@ export function ProductForm({
 
       <div className="grid grid-cols-3 gap-4">
         <Controller
-          name="standard"
-          control={control}
-          render={({ field }) => (
-            <Input
-              label="Стандарт"
-              type="text"
-              placeholder="Например, VESA"
-              leftIcon={<Tag className="w-4 h-4" />}
-              disabled={disabled}
-              {...field}
-            />
-          )}
-        />
-        <Controller
-          name="length"
-          control={control}
-          render={({ field }) => (
-            <Input
-              label="Длина"
-              type="text"
-              placeholder="Например, 1000 мм"
-              leftIcon={<Ruler className="w-4 h-4" />}
-              disabled={disabled}
-              {...field}
-            />
-          )}
-        />
-        <Controller
-          name="weight"
-          control={control}
-          render={({ field }) => (
-            <Input
-              label="Вес"
-              type="text"
-              placeholder="Например, 2.5 кг"
-              leftIcon={<Scale className="w-4 h-4" />}
-              disabled={disabled}
-              {...field}
-            />
-          )}
-        />
-      </div>
-
-      <div className="grid grid-cols-3 gap-4">
-        <Controller
           name="price"
           control={control}
-          rules={{ required: 'Цена обязательна' }}
+          rules={{ required: "Цена обязательна" }}
           render={({ field }) => (
             <Input
               label="Цена"
@@ -251,7 +223,7 @@ export function ProductForm({
         <Controller
           name="priceUnit"
           control={control}
-          rules={{ required: 'Единица обязательна' }}
+          rules={{ required: "Валюта обязательна" }}
           render={({ field }) => (
             <Select
               label="Валюта"
@@ -267,8 +239,8 @@ export function ProductForm({
           name="quantity"
           control={control}
           rules={{
-            required: 'Количество обязательно',
-            min: { value: 0, message: 'Не может быть меньше 0' },
+            required: "Количество обязательно",
+            min: { value: 0, message: "Не может быть меньше 0" },
           }}
           render={({ field, fieldState }) => (
             <Input
@@ -286,6 +258,112 @@ export function ProductForm({
             />
           )}
         />
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <Controller
+          name="unit"
+          control={control}
+          rules={{ required: "Единица измерения обязательна" }}
+          render={({ field }) => (
+            <Input
+              label="Единица измерения"
+              type="text"
+              placeholder="шт, т, кг, пог.м"
+              leftIcon={<Gauge className="w-4 h-4" />}
+              disabled={disabled}
+              {...field}
+            />
+          )}
+        />
+        <Controller
+          name="condition"
+          control={control}
+          rules={{ required: "Состояние обязательно" }}
+          render={({ field }) => (
+            <Select
+              label="Состояние товара"
+              options={CONDITION_OPTIONS}
+              value={field.value}
+              onChange={(v) => field.onChange(v)}
+              leftIcon={<Wrench className="w-4 h-4" />}
+              disabled={disabled}
+            />
+          )}
+        />
+      </div>
+
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <label className="text-sm font-medium text-gray-300">
+            Характеристики
+          </label>
+          <Button
+            type="button"
+            variant="secondary"
+            size="sm"
+            onClick={handleAddCharacteristic}
+            disabled={disabled}
+          >
+            <Plus className="w-4 h-4" />
+            <span>Добавить</span>
+          </Button>
+        </div>
+
+        {fields.length === 0 && (
+          <p className="text-sm text-gray-500 italic py-3 text-center border border-dashed border-white/10 rounded-lg">
+            Характеристики не добавлены
+          </p>
+        )}
+
+        <div className="space-y-2">
+          {fields.map((field, index) => (
+            <div
+              key={field.id}
+              className="flex items-start gap-3 glass rounded-lg border border-white/10 p-3"
+            >
+              <Controller
+                name={`characteristics.${index}.title`}
+                control={control}
+                rules={{ required: "Название обязательно" }}
+                render={({ field: f, fieldState }) => (
+                  <Input
+                    placeholder="Например, Вес"
+                    disabled={disabled}
+                    error={fieldState.error?.message}
+                    className="flex-1"
+                    {...f}
+                  />
+                )}
+              />
+              <Controller
+                name={`characteristics.${index}.value`}
+                control={control}
+                rules={{ required: "Значение обязательно" }}
+                render={({ field: f, fieldState }) => (
+                  <Input
+                    placeholder="Например, 2.5 кг"
+                    disabled={disabled}
+                    error={fieldState.error?.message}
+                    className="flex-1"
+                    {...f}
+                  />
+                )}
+              />
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="p-2 h-auto shrink-0 hover:bg-red-500/10 hover:text-red-500"
+                onClick={() => remove(index)}
+                disabled={disabled}
+                title="Удалить характеристику"
+              >
+                <Trash2 className="w-4 h-4" />
+              </Button>
+            </div>
+          ))}
+        </div>
       </div>
 
       <Controller
