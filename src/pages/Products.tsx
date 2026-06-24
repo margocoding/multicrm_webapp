@@ -1,36 +1,62 @@
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion } from "framer-motion";
 import {
+  FolderTree,
+  Gauge,
   Globe,
+  ImageOff,
   Package,
   Pencil,
   Plus,
   Search,
+  Tag,
   Trash2,
-  FolderTree,
-  Box,
-} from 'lucide-react';
-import { useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
-import type { Product } from '../api/products.api';
-import { productsApi } from '../api/products.api';
-import { sitesApi } from '../api/sites.api';
-import type { Category } from '../api/categories.api';
-import { categoriesApi } from '../api/categories.api';
-import type { ProductFormData } from '../components/forms/ProductForm';
-import { ProductModal } from '../components/modals/ProductModal';
-import { Button } from '../components/ui/Button';
-import { Loading } from '../components/ui/Loading';
-import { Modal } from '../components/ui/Modal';
-import { Pagination } from '../components/ui/Pagination';
-import { Table, TableBody, TableCell, TableHeader, TableRow } from '../components/ui/Table';
-import { getImageUrl } from '../lib/utils';
-import { CategoriesModal } from '../components/modals/AllCategoriesModal';
-import type { Site } from '../types';
+  Wrench
+} from "lucide-react";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import type { Category } from "../api/categories.api";
+import { categoriesApi } from "../api/categories.api";
+import type {
+  Characteristic,
+  Product,
+  ProductCondition,
+} from "../api/products.api";
+import { productsApi } from "../api/products.api";
+import { sitesApi } from "../api/sites.api";
+import type { ProductFormData } from "../components/forms/ProductForm";
+import { CategoriesModal } from "../components/modals/AllCategoriesModal";
+import { ProductModal } from "../components/modals/ProductModal";
+import { Button } from "../components/ui/Button";
+import { Loading } from "../components/ui/Loading";
+import { Modal } from "../components/ui/Modal";
+import { Pagination } from "../components/ui/Pagination";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHeader,
+  TableRow,
+} from "../components/ui/Table";
+import { getImageUrl } from "../lib/utils";
+import type { Site } from "../types";
 
 const PRICE_UNIT_SYMBOLS: Record<string, string> = {
-  RUB: '₽',
-  USD: '$',
-  EUR: '€',
+  RUB: "₽",
+  USD: "$",
+  EUR: "€",
+};
+
+const CONDITION_CONFIG: Record<
+  ProductCondition,
+  { label: string; classes: string }
+> = {
+  NEW: { label: "Новый", classes: "bg-emerald-500/10 text-emerald-400" },
+  USED: { label: "Б/У", classes: "bg-amber-500/10 text-amber-400" },
+  REFURBISHED: {
+    label: "Восстановленный",
+    classes: "bg-blue-500/10 text-blue-400",
+  },
+  RESERVED: { label: "Резерв", classes: "bg-purple-500/10 text-purple-400" },
 };
 
 export function Products() {
@@ -40,14 +66,14 @@ export function Products() {
   const [total, setTotal] = useState(0);
 
   const [productModal, setProductModal] = useState<{
-    mode: 'create' | 'edit';
+    mode: "create" | "edit";
     product?: Product | null;
   } | null>(null);
 
   const [isPublishModalOpen, setIsPublishModalOpen] = useState(false);
   const [isCategoriesModalOpen, setIsCategoriesModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -68,7 +94,7 @@ export function Products() {
       setProducts(response.items);
       setTotal(response.total);
     } catch (error) {
-      toast.error('Не удалось загрузить товары');
+      toast.error("Не удалось загрузить товары");
     } finally {
       setIsLoading(false);
     }
@@ -80,7 +106,7 @@ export function Products() {
       const response = await sitesApi.getAll({ limit: 100 });
       setSites(response.items);
     } catch (error) {
-      toast.error('Не удалось загрузить сайты');
+      toast.error("Не удалось загрузить сайты");
     } finally {
       setIsLoadingSites(false);
     }
@@ -91,7 +117,7 @@ export function Products() {
       const data = await categoriesApi.getAll();
       setCategories(data);
     } catch (error) {
-      toast.error('Не удалось загрузить категории');
+      toast.error("Не удалось загрузить категории");
     }
   };
 
@@ -124,57 +150,64 @@ export function Products() {
     return null;
   };
 
+  const formatCharacteristics = (chars: Characteristic[], maxLength = 40) => {
+    if (!chars || chars.length === 0) return "—";
+
+    const preview = chars
+      .slice(0, 3)
+      .map((c) => `${c.title}: ${c.value}`)
+      .join(" • ");
+
+    if (preview.length <= maxLength || chars.length <= 3) {
+      return preview;
+    }
+
+    return preview.slice(0, maxLength - 3) + "...";
+  };
+
   const handleProductSubmit = async (data: ProductFormData) => {
-    const isEdit = productModal?.mode === 'edit';
+    const isEdit = productModal?.mode === "edit";
     setIsSubmitting(true);
     try {
+      const payload = {
+        name: data.name,
+        subtitle: data.subtitle,
+        price: data.price,
+        priceUnit: data.priceUnit,
+        quantity: data.quantity,
+        unit: data.unit,
+        condition: data.condition,
+        categoryId: data.categoryId ?? null,
+        siteIds: data.siteIds,
+        image: data.image,
+        characteristics: data.characteristics,
+      };
+
       if (isEdit && productModal?.product) {
-        await productsApi.update(productModal.product.id, {
-          name: data.name,
-          subtitle: data.subtitle,
-          standard: data.standard,
-          length: data.length,
-          weight: data.weight,
-          price: data.price,
-          priceUnit: data.priceUnit,
-          quantity: data.quantity,
-          categoryId: data.categoryId ?? null,
-          siteIds: data.siteIds,
-          image: data.image,
-        });
-        toast.success('Товар успешно обновлен');
+        await productsApi.update(productModal.product.id, payload);
+        toast.success("Товар успешно обновлен");
       } else {
-        await productsApi.create({
-          name: data.name,
-          subtitle: data.subtitle,
-          standard: data.standard,
-          length: data.length,
-          weight: data.weight,
-          price: data.price,
-          priceUnit: data.priceUnit,
-          quantity: data.quantity,
-          categoryId: data.categoryId ?? null,
-          siteIds: data.siteIds,
-          image: data.image,
-        });
-        toast.success('Товар успешно создан');
+        await productsApi.create(payload);
+        toast.success("Товар успешно создан");
       }
       setProductModal(null);
       loadProducts();
     } catch (error) {
-      toast.error(isEdit ? 'Не удалось обновить товар' : 'Не удалось создать товар');
+      toast.error(
+        isEdit ? "Не удалось обновить товар" : "Не удалось создать товар",
+      );
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const handleDeleteProduct = async (id: string) => {
+  const handleDeleteProduct = async (idOrSlug: string) => {
     try {
-      await productsApi.remove(id);
-      toast.success('Товар успешно удален');
+      await productsApi.remove(idOrSlug);
+      toast.success("Товар успешно удален");
       loadProducts();
     } catch (error) {
-      toast.error('Не удалось удалить товар');
+      toast.error("Не удалось удалить товар");
     }
   };
 
@@ -187,11 +220,11 @@ export function Products() {
         siteId,
         isPublished: true,
       });
-      toast.success('Товар опубликован на сайте');
+      toast.success("Товар опубликован на сайте");
       setIsPublishModalOpen(false);
       loadProducts();
     } catch (error) {
-      toast.error('Не удалось опубликовать товар');
+      toast.error("Не удалось опубликовать товар");
     } finally {
       setIsPublishing(false);
     }
@@ -207,7 +240,9 @@ export function Products() {
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
           <h1 className="text-xl lg:text-2xl font-bold text-white">Товары</h1>
-          <p className="text-gray-400 text-sm mt-1">Управление каталогом товаров</p>
+          <p className="text-gray-400 text-sm mt-1">
+            Управление каталогом товаров
+          </p>
         </div>
         <div className="flex items-center gap-2">
           <Button
@@ -219,7 +254,7 @@ export function Products() {
             <span className="hidden sm:inline">Категории</span>
           </Button>
           <Button
-            onClick={() => setProductModal({ mode: 'create' })}
+            onClick={() => setProductModal({ mode: "create" })}
             size="sm"
             leftIcon={<Plus className="w-4 h-4" />}
           >
@@ -253,7 +288,12 @@ export function Products() {
         className="glass rounded-xl border border-white/5 relative overflow-hidden"
       >
         {isLoading ? (
-          <Loading variant="overlay" size="lg" text="Загрузка товаров..." fullHeight />
+          <Loading
+            variant="overlay"
+            size="lg"
+            text="Загрузка товаров..."
+            fullHeight
+          />
         ) : (
           <>
             <Table>
@@ -265,7 +305,7 @@ export function Products() {
                   </TableCell>
                   <TableCell variant="header">Цена</TableCell>
                   <TableCell variant="header" className="hidden md:table-cell">
-                    Остаток
+                    Состояние
                   </TableCell>
                   <TableCell variant="header" className="hidden lg:table-cell">
                     Опубликовано
@@ -288,7 +328,10 @@ export function Products() {
                     </TableRow>
                   ) : (
                     products.map((product, index) => {
-                      const categoryDisplay = getCategoryDisplay(product.categoryId);
+                      const categoryDisplay = getCategoryDisplay(
+                        product.categoryId,
+                      );
+                      const conditionCfg = CONDITION_CONFIG[product.condition];
 
                       return (
                         <motion.tr
@@ -297,17 +340,28 @@ export function Products() {
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, x: -10 }}
                           transition={{ delay: index * 0.05 }}
-                          whileHover={{ backgroundColor: 'rgba(220, 38, 38, 0.05)' }}
+                          whileHover={{
+                            backgroundColor: "rgba(220, 38, 38, 0.05)",
+                          }}
                           className="table-row-hover"
                         >
                           <TableCell>
                             <div className="flex items-center gap-3">
                               <div className="w-10 h-10 rounded-lg overflow-hidden bg-background-dark shrink-0">
-                                <img
-                                  src={getImageUrl(product.image)}
-                                  alt={product.name}
-                                  className="w-full h-full object-cover"
-                                />
+                                <div className="w-10 h-10 rounded-lg overflow-hidden bg-background-dark shrink-0 flex items-center justify-center">
+                                  {product.image ? (
+                                    <img
+                                      src={getImageUrl(product.image)}
+                                      alt={product.name}
+                                      className="w-full h-full object-cover"
+                                    />
+                                  ) : (
+                                    <ImageOff
+                                      className="w-5 h-5 text-gray-600"
+                                      strokeWidth={1.5}
+                                    />
+                                  )}
+                                </div>
                               </div>
                               <div className="min-w-0">
                                 <p className="text-white font-medium text-sm lg:text-base truncate">
@@ -315,24 +369,39 @@ export function Products() {
                                 </p>
                                 <p className="text-gray-500 text-xs truncate max-w-37.5 lg:max-w-55">
                                   {product.subtitle ||
-                                    [product.standard, product.length, product.weight]
-                                      .filter(Boolean)
-                                      .join(' • ')}
+                                    formatCharacteristics(
+                                      product.characteristics,
+                                    )}
                                 </p>
+                                <div className="flex items-center gap-2 mt-1">
+                                  <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-white/5 text-gray-400">
+                                    <Gauge className="w-3 h-3" />
+                                    {product.unit}
+                                  </span>
+                                  {product.characteristics.length > 0 && (
+                                    <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-white/5 text-gray-400">
+                                      <Tag className="w-3 h-3" />
+                                      {product.characteristics.length} хар.
+                                    </span>
+                                  )}
+                                </div>
                               </div>
                             </div>
                           </TableCell>
-                          <TableCell className="hidden md:table-cell">
+                          <TableCell className="hidden md:table-cell max-w-50">
                             {categoryDisplay ? (
                               <span
-                                className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                                className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium whitespace-nowrap overflow-hidden max-w-full ${
                                   categoryDisplay.isChild
-                                    ? 'bg-purple-500/10 text-purple-400'
-                                    : 'bg-indigo-500/10 text-indigo-400'
+                                    ? "bg-purple-500/10 text-purple-400"
+                                    : "bg-indigo-500/10 text-indigo-400"
                                 }`}
+                                title={categoryDisplay.name}
                               >
-                                <FolderTree className="w-3 h-3" />
-                                {categoryDisplay.name}
+                                <FolderTree className="w-3 h-3 shrink-0" />
+                                <span className="truncate">
+                                  {categoryDisplay.name}
+                                </span>
                               </span>
                             ) : (
                               <span className="text-xs text-gray-500">—</span>
@@ -342,18 +411,12 @@ export function Products() {
                             {formatPrice(product.price, product.priceUnit)}
                           </TableCell>
                           <TableCell className="hidden md:table-cell">
-                            <div className="flex items-center gap-2">
-                              <Box className="w-4 h-4 text-gray-400" />
-                              <span
-                                className={`text-sm font-medium ${
-                                  (product.quantity ?? 0) > 0
-                                    ? 'text-green-400'
-                                    : 'text-red-400'
-                                }`}
-                              >
-                                {product.quantity ?? 0} шт
-                              </span>
-                            </div>
+                            <span
+                              className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium ${conditionCfg.classes}`}
+                            >
+                              <Wrench className="w-3 h-3" />
+                              {conditionCfg.label}
+                            </span>
                           </TableCell>
                           <TableCell className="hidden lg:table-cell">
                             <div className="flex items-center gap-2">
@@ -383,7 +446,9 @@ export function Products() {
                                 variant="ghost"
                                 size="sm"
                                 className="p-1.5 h-auto"
-                                onClick={() => setProductModal({ mode: 'edit', product })}
+                                onClick={() =>
+                                  setProductModal({ mode: "edit", product })
+                                }
                               >
                                 <Pencil className="w-4 h-4" />
                               </Button>
@@ -391,7 +456,9 @@ export function Products() {
                                 variant="ghost"
                                 size="sm"
                                 className="p-1.5 h-auto hover:bg-red-500/10 hover:text-red-500"
-                                onClick={() => handleDeleteProduct(product.id)}
+                                onClick={() =>
+                                  handleDeleteProduct(product.slug)
+                                }
                               >
                                 <Trash2 className="w-4 h-4" />
                               </Button>
@@ -420,7 +487,7 @@ export function Products() {
       <ProductModal
         isOpen={productModal !== null}
         onClose={() => setProductModal(null)}
-        mode={productModal?.mode ?? 'create'}
+        mode={productModal?.mode ?? "create"}
         product={productModal?.product}
         sites={sites}
         categories={categories}
@@ -445,10 +512,16 @@ export function Products() {
           <div className="space-y-2 max-h-96 overflow-y-auto">
             {isLoadingSites ? (
               <div className="py-8 flex justify-center">
-                <Loading variant="spinner" size="md" text="Загрузка сайтов..." />
+                <Loading
+                  variant="spinner"
+                  size="md"
+                  text="Загрузка сайтов..."
+                />
               </div>
             ) : sites.length === 0 ? (
-              <p className="text-center text-gray-500 py-8">Нет доступных сайтов</p>
+              <p className="text-center text-gray-500 py-8">
+                Нет доступных сайтов
+              </p>
             ) : (
               sites.map((site) => (
                 <button

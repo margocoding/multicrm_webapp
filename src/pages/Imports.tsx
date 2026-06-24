@@ -126,8 +126,8 @@ export function Imports() {
   const canProceedToStep2 = selectedFile && !isUploading && importPreview;
   const canProceedToStep3 = selectedSiteIds.length > 0;
 
-  const xmlExample = `<?xml version="1.0" encoding="UTF-8"?>
-<yml_catalog date="2026-06-20T08:43">
+const xmlExample = `<?xml version="1.0" encoding="UTF-8"?>
+<yml_catalog date="2026-06-24T10:00">
   <shop>
     <name>Название магазина</name>
     <categories>
@@ -142,16 +142,19 @@ export function Imports() {
         <categoryId>2</categoryId>
         <picture>https://example.com/image.jpg</picture>
         <description>Описание товара...</description>
-        <weight>2.5</weight>
-        <length>100</length>
-        <standard>ГОСТ</standard>
+        <unit>шт</unit>
+        <condition>NEW</condition>
+        <param name="Вес">2.5</param>
+        <param name="Длина">100</param>
+        <param name="Стандарт">ГОСТ</param>
+        <param name="Материал">Металл</param>
         <count>15</count>
       </offer>
     </offers>
   </shop>
 </yml_catalog>`;
 
-  const jsonExample = `{
+const jsonExample = `{
   "shop": {
     "name": "Название магазина",
     "categories": [
@@ -167,10 +170,15 @@ export function Imports() {
         "categoryId": "2",
         "picture": "https://example.com/image.jpg",
         "description": "Описание товара...",
-        "weight": "2.5",
-        "length": "100",
-        "standard": "ГОСТ",
-        "count": 15
+        "unit": "шт",
+        "condition": "NEW",
+        "count": 15,
+        "characteristics": [
+          { "title": "Вес", "value": "2.5" },
+          { "title": "Длина", "value": "100" },
+          { "title": "Стандарт", "value": "ГОСТ" },
+          { "title": "Материал", "value": "Металл" }
+        ]
       }
     ]
   }
